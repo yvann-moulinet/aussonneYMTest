@@ -13,12 +13,12 @@ switch ($action)
 					$vue->afficheMenuInternaute();
 					$message = $this->toutesLesEquipes->listeDesEquipes();
 					$vue = new vueCentraleEquipe();
-					$vue->visualiserSpecialite($message);
+					$vue->visualiserEquipe($message);
 					break;
 				case "modifier" :
 					$vue=new vueCentraleConnexion();
 					$vue->afficheMenuAdmin();
-					$message= $this->toutesLesSpecialites->lesSpecialitesAuFormatHTML();
+					$message= $this->toutesLesEquipes->lesSpecialitesAuFormatHTML();
 					$vue = new vueCentraleSpecialite();
 					$vue->modifierSpecialite($message);
 					break;

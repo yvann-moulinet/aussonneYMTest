@@ -65,7 +65,7 @@
 					<span class="caret"></span>
 				</button>
 				<ul class="dropdown-menu" aria-labelledby="menuAdherent">
-					<li><a class="dropdown-item" href=index.php?vue=Adherent&action=visualiser>Visualiser les Equipes</a></li>
+					<li><a class="dropdown-item" href=index.php?vue=Equipe&action=visualiser>Visualiser les Equipes</a></li>
 				</ul>
 			</div>
 			</div>	

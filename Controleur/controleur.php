@@ -254,7 +254,7 @@ class controleur
 
 	function actionEquipe($action, $role)
 	{
-		require 'controleur/controleurSpecialite.php';
+		require 'controleur/controleurEquipe.php';
 	}
 
 	// On a une fonction outil de chargement de notre conteneur	

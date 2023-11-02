@@ -1,51 +1,39 @@
 <?php
 
-class vueCentraleSpecialite
+class vueCentraleEquipe
 {
     public function __construct()
     {
     }
 
-    public function modifierSpecialite($message)
+    public function modifierEquipe($message)
     {
-        echo '<form action=index.php?vue=Specialite&action=choixFaitPourModif method = GET>';
+        echo '<form action=index.php?vue=Equipe&action=choixFaitPourModif method = GET>';
         echo $message;
-        echo ' <input type=hidden name=vue value=Specialite></input>
+        echo ' <input type=hidden name=vue value=Equipe></input>
 				   <input type=hidden name=action value=choixFaitPourModif></input>
 				   <button type="submit" class="btn btn-primary">Valider</button>
 				  </form>
 			';
     }
-    public function visualiserSpecialite($message)
+    public function visualiserEquipe($message)
     {
 
-        $listeSpecialite = explode("|", $message);
+        $listeEquipe = explode('\n', $message);
         echo '<table class="table table-striped table-bordered table-sm ">
 					<thead>
 						<tr>
 							<th scope="col">Nom</th>
-							<th scope="col">Age Min</th>
-							<th scope="col">Age Max</th>
-							<th scope="col">Sexe</th>
-							<th scope="col">Nbr de pers Max</th>
-							<th scope="col">Entraineur</th>
-														
+                            <th scope="col">Spécialité</th>
+							<th scope="col">Entraineur</th>						
 						</tr>
 					</thead>
 					<tbody>';
-        $nbE = 0;
-        while ($nbE < sizeof($listeSpecialite))
+        foreach (array_filter($listeEquipe) as $equipe)
         {
-            $i = 0;
-            while (($i < 6) && ($nbE < sizeof($listeSpecialite)))
-            {
-                echo '<td scope>';
-                echo trim($listeSpecialite[$nbE]);
-                $i++;
-                $nbE++;
-                echo '</td>';
-            }
-            echo '</tr>';
+            echo '<tr><td>';
+            echo str_replace('|', "</td><td>", $equipe);
+            echo '</td></tr>';
         }
         echo '</tbody>';
         echo '</table>';

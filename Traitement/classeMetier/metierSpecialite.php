@@ -91,6 +91,6 @@ class metierSpecialite
 	// méthode permettant d'afficher tous les attributs d'un seul coup
 	public function afficheSpecialite()
 	{
-		return $this->nomSpecialite . '|' . $this->ageMinEquipe . '|' . $this->ageMaxEquipe . '|' . $this->sexeEquipe . '|' . $this->nbrPlaceEquipe . '|' . $this->lEntraineur->nomEntraineur . '|';
+		return $this->nomSpecialite . '|' . $this->ageMinEquipe . '|' . $this->ageMaxEquipe . '|' . $this->sexeEquipe . '|' . $this->nbrPlaceEquipe . '|' . $this->lEntraineur->nomEntraineur . '\n';
 	}
 }

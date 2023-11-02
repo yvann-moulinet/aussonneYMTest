@@ -20,7 +20,7 @@
 		public function visualiserSpecialite($message)
 		{
 						
-			$listeSpecialite=explode("|",$message);
+			$listeSpecialite=explode('\n',$message);
 			echo '<table class="table table-striped table-bordered table-sm ">
 					<thead>
 						<tr>
@@ -28,13 +28,13 @@
 							<th scope="col">Age Min</th>
 							<th scope="col">Age Max</th>
 							<th scope="col">Sexe</th>
-							<th scope="col">Nbr de pers Max</th>
+							<th scope="col">Nbr de pers Max par équipe</th>
 							<th scope="col">Entraineur</th>
 														
 						</tr>
 					</thead>
 					<tbody>';
-			$nbE=0;
+			/*$nbE=0;
 			while ($nbE<sizeof($listeSpecialite))
 			{	
 				$i=0;
@@ -49,9 +49,18 @@
 				echo '</tr>';
 			}
 			echo '</tbody>';
+			echo '</table>';*/
+			foreach (array_filter($listeSpecialite) as $specialite)
+			{
+				echo '<tr><td>';
+				echo str_replace('|', "</td><td>", $specialite);
+				echo '</td></tr>';
+			}
+			echo '</tbody>';
 			echo '</table>';
 			
 		}
+		
 		
 	public function choixFaitPourModifSpecialite($nom, $nbrPlace, $ageMin, $ageMax, $sexe, $choix,$liste)
 	{
