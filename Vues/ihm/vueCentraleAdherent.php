@@ -40,7 +40,7 @@ class vueCentraleAdherent
 		{
 			echo '<tr><td>';
 			echo str_replace('|', "</td><td>", $adherent);
-			echo '<td></tr>';
+			echo '</td></tr>';
 		}
 		echo '</tbody>';
 		echo '</table>';

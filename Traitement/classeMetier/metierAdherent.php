@@ -41,6 +41,8 @@ class metierAdherent
 			case 'nomEquipe':
 				return $this->lEquipe->nomEquipe;
 				break;
+			case 'nomEntraineur':
+				return $this->lEquipe->nomEntraineur;
 			default:
 				$trace = debug_backtrace();
 				trigger_error('Propriété non-accessible via _get() :' . $attribut . 'dans ' . $trace[0]['file'] . ' à la ligne' . $trace[0]['line'], E_USER_NOTICE);
@@ -88,6 +90,6 @@ class metierAdherent
 	// méthode permettant d'afficher tous les attributs d'un seul coup
 	public function afficheAdherent()
 	{
-		return $this->nomAdherent . '|' . $this->prenomAdherent . '|' . $this->ageAdherent . '|' . $this->sexeAdherent . '|' . $this->loginAdherent . '|' . $this->lEquipe->nomSpecialite . '\n';
+		return $this->nomAdherent . '|' . $this->prenomAdherent . '|' . $this->ageAdherent . '|' . $this->sexeAdherent . '|' . $this->loginAdherent . '|' . $this->lEquipe->nomSpecialite . '|' . $this->nomEntraineur . '\n';
 	}
 }
