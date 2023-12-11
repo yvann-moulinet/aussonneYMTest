@@ -35,10 +35,10 @@
 								</tr>
 								<tr>
 									<td>
-											<input type=text name=login value="Login"></input>
+											<input type=text name=login placeholder="Login"></input>
 									</td>
 									<td>
-											<input type=text name=pwd value="Pwd"></input>
+											<input type=text name=pwd placeholder="Pwd"></input>
 									</td>
 									<td>
 									</td>

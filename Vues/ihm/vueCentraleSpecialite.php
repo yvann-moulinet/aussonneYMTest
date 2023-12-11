@@ -25,11 +25,6 @@
 					<thead>
 						<tr>
 							<th scope="col">Nom</th>
-							<th scope="col">Age Min</th>
-							<th scope="col">Age Max</th>
-							<th scope="col">Sexe</th>
-							<th scope="col">Nbr de pers Max par équipe</th>
-							<th scope="col">Entraineur</th>
 														
 						</tr>
 					</thead>

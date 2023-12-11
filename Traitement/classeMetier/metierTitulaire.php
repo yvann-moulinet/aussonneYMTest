@@ -8,9 +8,9 @@ Class metierTitulaire extends metierEntraineur
 	
 		
 	//CONSTRUCTEUR-----------------------------------------------------------------------------
-	public function __construct($unIdEntraineur, $unNomEntraineur, $unLoginEntraineur, $unPwdEntraineur,private string $uneDateEmbauche='')
+	public function __construct($lesSpecialites, $unIdEntraineur, $unNomEntraineur, $unLoginEntraineur, $unPwdEntraineur,private string $uneDateEmbauche='')
 		{
-		parent::__construct(idEntraineur: $unIdEntraineur,nomEntraineur : $unNomEntraineur, loginEntraineur :$unLoginEntraineur, pwdEntraineur : $unPwdEntraineur);
+		parent::__construct(lesSpecialites : $lesSpecialites, idEntraineur: $unIdEntraineur,nomEntraineur : $unNomEntraineur, loginEntraineur :$unLoginEntraineur, pwdEntraineur : $unPwdEntraineur);
 		$this->dateEmbauche = $uneDateEmbauche;
 		}
 	
@@ -50,7 +50,7 @@ Class metierTitulaire extends metierEntraineur
 	public function afficheTitulaire()
 	{
 		$liste=parent::afficheEntraineur();
-		$liste=$liste.$this->dateEmbauche.'|';
+		$liste=$liste.$this->dateEmbauche. '\n';
 		return $liste;
 	}			    
 	

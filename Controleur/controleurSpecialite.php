@@ -3,7 +3,8 @@ switch ($action)
 			{
 				case "ajouter":
 					$vue=new vueCentraleConnexion();
-					$vue->afficheMenuAdmin();//J'ajoute une nouvelle specialite juste pour voir si cela fonctionne
+					$liste = $this->maBD->afficheListeSelect();
+					$vue->afficheMenuAdmin($liste);//J'ajoute une nouvelle specialite juste pour voir si cela fonctionne
 					//mais la fonctionnalité reste à faire en réalité
 					$this->toutesLesSpecialites->ajouterUneSpecialite($this->maBD->donneNumeroMaxSpecialite(),'Specialite essai',10,5,8,'F',$this->tousLesTitulaires->donneObjetTitulaireDepuisNumero(1));
 					$this->maBD->insertSpecialite('Specialite essai',10,5,8,'F',1);			
@@ -17,14 +18,16 @@ switch ($action)
 					break;
 				case "modifier" :
 					$vue=new vueCentraleConnexion();
-					$vue->afficheMenuAdmin();
+					$liste = $this->maBD->afficheListeSelect();
+					$vue->afficheMenuAdmin($liste);
 					$message= $this->toutesLesSpecialites->lesSpecialitesAuFormatHTML();
 					$vue = new vueCentraleSpecialite();
 					$vue->modifierSpecialite($message);
 					break;
 				case "choixFaitPourModif":
 					$vue=new vueCentraleConnexion();
-					$vue->afficheMenuAdmin();
+					$liste = $this->maBD->afficheListeSelect();
+					$vue->afficheMenuAdmin($liste);
 					$choix=$_GET['idSpecilite'];
 					$lSpecialite=$this->toutesLesSpecialites->donneObjetSpecialiteDepuisNumero($choix);
 					$vue = new vueCentraleSpecialite();
@@ -32,7 +35,8 @@ switch ($action)
 					break;
 				case "EnregModif":
 					$vue=new vueCentraleConnexion();
-					$vue->afficheMenuAdmin();
+					$liste = $this->maBD->afficheListeSelect();
+					$vue->afficheMenuAdmin($liste);
 					$idSpecialite=$_GET['idSpecialite'];
 					$nomSpecialite=$_GET['nomSpecialite'];
 					$nbrPlaceEquipe=$_GET['nbrPlaceEquipe'];

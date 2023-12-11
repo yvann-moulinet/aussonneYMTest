@@ -6,9 +6,9 @@ class metierSpecialite
 
 	//CONSTRUCTEUR-----------------------------------------------------------------------------
 
-	public function __construct(private metierEntraineur $lEntraineur, private int $idSpecialite = 0, private string $nomSpecialite = '', private int $nbrPlaceEquipe = 0, private int $ageMinEquipe = 0, private int $ageMaxEquipe = 0, private string $sexeEquipe = '')
+	public function __construct(private int $idSpecialite = 0, private string $nomSpecialite = '')
 	{
-		$this->lEntraineur->ajoutEntraineur($this);
+		
 	}
 	public function ajoutSpecialite($lSpecialite)
 	{
@@ -37,12 +37,6 @@ class metierSpecialite
 				break;
 			case 'sexeEquipe':
 				return $this->sexeEquipe;
-				break;
-			case 'idEntraineur':
-				return $this->lEntraineur->idEntraineur;
-				break;
-			case 'nomEntraineur':
-				return $this->lEntraineur->nomEntraineur;
 				break;
 			default:
 				$trace = debug_backtrace();
@@ -91,6 +85,6 @@ class metierSpecialite
 	// méthode permettant d'afficher tous les attributs d'un seul coup
 	public function afficheSpecialite()
 	{
-		return $this->nomSpecialite . '|' . $this->ageMinEquipe . '|' . $this->ageMaxEquipe . '|' . $this->sexeEquipe . '|' . $this->nbrPlaceEquipe . '|' . $this->lEntraineur->nomEntraineur . '\n';
+		return $this->nomSpecialite. '\n';
 	}
 }

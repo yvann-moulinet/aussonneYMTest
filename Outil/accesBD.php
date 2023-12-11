@@ -174,7 +174,7 @@ class accesBD
 		return $sonId;
 	}
 
-	public function insertTitulaire($unNomEntraineur, $unLoginEntraineur, $unPwdEntraineur, $uneDateEmbauche)
+	public function insertTitulaire($unNomEntraineur, $unLoginEntraineur, $unPwdEntraineur, $uneDateEmbauche, $idSpecialite)
 	{
 		$sonId = $this->donneProchainIdentifiant("ENTRAINEUR", "idEntraineur");
 		$requete = $this->conn->prepare("INSERT INTO ENTRAINEUR (idEntraineur,nomEntraineur,loginEntraineur,pwdEntraineur) VALUES (?,?,?,?)");
@@ -194,21 +194,23 @@ class accesBD
 		{
 			die("Erreur dans insert Titulaire : " . $requete->errorCode());
 		}
+		$requete = $this->conn->prepare("INSERT INTO competent (idSpecialite,idEntraineur) VALUES (?,?)");
+		$requete->bindValue(1, $idSpecialite);
+		$requete->bindValue(2, $sonId);
+		if (!$requete->execute())
+		{
+			die("Erreur dans insert Vacataire : " . $requete->errorCode());
+		}
 
 		return $sonId;
 	}
 
-	public function insertSpecialite($unNomSpecialite, $unNbrPlaceEquipe, $unAgeMinEquipe, $unAgeMaxEquipe, $unSexeEquipe, $unIdEntraineur)
+	public function insertSpecialite($unNomSpecialite)
 	{
 		$sonId = $this->donneProchainIdentifiant("SPECIALITE", "idSpecialite");
-		$requete = $this->conn->prepare("INSERT INTO SPECIALITE (idSpecialite,nomSpecialite,nbrPlaceEquipe,ageMinEquipe,ageMaxEquipe,sexeEquipe,idEntraineur) VALUES (?,?,?,?,?,?,?)");
+		$requete = $this->conn->prepare("INSERT INTO SPECIALITE (idSpecialite,nomSpecialite) VALUES (?,?)");
 		$requete->bindValue(1, $sonId);
 		$requete->bindValue(2, $unNomSpecialite);
-		$requete->bindValue(3, $unNbrPlaceEquipe);
-		$requete->bindValue(4, $unAgeMinEquipe);
-		$requete->bindValue(5, $unAgeMaxEquipe);
-		$requete->bindValue(6, $unSexeEquipe);
-		$requete->bindValue(7, $unIdEntraineur);
 		if (!$requete->execute())
 		{
 			die("Erreur dans insert Specialite : " . $requete->errorCode());
@@ -237,20 +239,42 @@ class accesBD
 		return $sonId;
 	}
 
+	public function insertCompetent($listeSpecialites, $sonId)
+	{
+		$moment = date("Y-m-d H:i:s");
+		$lesSpes = '';
+
+		foreach ($listeSpecialites as $idSpe)
+		{
+			$req = $this->conn->prepare("INSERT INTO competent (idSpecialite, idEntraineur) VALUES (?,?)");
+			$req->bindValue(1, $idSpe);
+			$req->bindValue(2, $sonId - 1);
+			if (!$req->execute())
+			{
+				die("<h1>ERREUR<br>Connexion à la base de données impossible.</h1>");
+			}
+			$lesSpes .= $idSpe . ', ';
+		}
+		//ajout de l'action dans logActionUtilisateur
+		$log = $this->conn->prepare("INSERT INTO logActionUtilisateur (action,temps,idUtilisateur) VALUES (?,?,?)");
+		$log->bindValue(3, 'insert specialite' . $sonId . ' : ' . $lesSpes);
+		$log->bindValue(2, $moment);
+		$log->bindValue(3, $_SESSION['login']);
+		if (!$log->execute())
+		{
+			die("<h1>ERREUR<br>Connexion à la base de données impossible.</h1>");
+		}
+	}
+
 	/***********************************************************************************************
 	méthode qui va permettre de modifier les éléments d'une équipe.
 	 ***********************************************************************************************/
-	public function modifSpecialite($idSpecialite, $unNomSpecialite, $unNbrPlaceEquipe, $unAgeMinEquipe, $unAgeMaxEquipe, $unSexeEquipe, $unIdEntraineur)
+	public function modifSpecialite($idSpecialite, $unNomSpecialite)
 	{
-		$requete = $this->conn->prepare("UPDATE specialite SET nomSpecialite = ?, nbrPlaceEquipe = ?, ageMinEquipe = ?, ageMaxEquipe = ?, sexeEquipe = ?, idEntraineur = ? where idSpecialite = ?");
+		$requete = $this->conn->prepare("UPDATE specialite SET nomSpecialite = ? where idSpecialite = ?");
 
-		$requete->bindValue(1, $unNomSpecialite);
-		$requete->bindValue(2, $unNbrPlaceEquipe);
-		$requete->bindValue(3, $unAgeMinEquipe);
-		$requete->bindValue(4, $unAgeMaxEquipe);
-		$requete->bindValue(5, $unSexeEquipe);
-		$requete->bindValue(6, $unIdEntraineur);
-		$requete->bindValue(7, $idSpecialite);
+		$requete->bindValue(1, $idSpecialite);
+		$requete->bindValue(2, $unNomSpecialite);
 
 		echo "La modification est effectuée.";
 
@@ -309,8 +333,11 @@ class accesBD
 			case 'EQUIPE':
 				$stringQuery .= 'equipe';
 				break;
+			case 'POUVOIR':
+				$stringQuery .= 'pouvoir';
+				break;
 			default:
-				die('Pas une table valide');
+				die('Pas une table valide' . $uneTable);
 				break;
 		}
 
@@ -401,5 +428,51 @@ class accesBD
 		{
 			die('Erreur sur l identifiant de l adherent : ' + $requete->errorCode());
 		}
+	}
+
+	public function chercheSpecialite($idEntraineur)
+	{
+		$stringQuery = "SELECT specialite.idSpecialite, nomSpecialite FROM specialite inner join competent on competent.idSpecialite = specialite.idSpecialite WHERE competent.idEntraineur = $idEntraineur";
+		$requete = $this->conn->prepare($stringQuery);
+		$nbTuples = 0;
+		$lesInfos = array();
+		if ($requete->execute())
+		{
+			while ($row = $requete->fetch(PDO::FETCH_NUM))
+			{
+				$lesInfos[$nbTuples] = $row;
+				$nbTuples++;
+			}
+		}
+		else
+		{
+			die('Problème dans chargement : ' . $requete->errorCode());
+		}
+		return $lesInfos;
+	}
+	public function chercheEquipe($idAdherent)
+	{
+		$stringQuery = "SELECT equipe.*, specialite.*, entraineur.*
+		FROM pouvoir 
+		INNER JOIN equipe ON pouvoir.idEquipe = equipe.idEquipe 
+		INNER JOIN specialite ON specialite.idSpecialite = equipe.idSpecialite 
+		INNER JOIN entraineur ON entraineur.idEntraineur = equipe.idEntraineur 
+		WHERE pouvoir.idAdherent = $idAdherent";
+		$requete = $this->conn->prepare($stringQuery);
+		$nbTuples = 0;
+		$lesInfos = array();
+		if ($requete->execute())
+		{
+			while ($row = $requete->fetch(PDO::FETCH_NUM))
+			{
+				$lesInfos[$nbTuples] = $row;
+				$nbTuples++;
+			}
+		}
+		else
+		{
+			die('Problème dans chargement : ' . $requete->errorCode());
+		}
+		return $lesInfos;
 	}
 }

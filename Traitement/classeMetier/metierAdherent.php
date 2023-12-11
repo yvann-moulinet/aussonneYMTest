@@ -4,10 +4,10 @@ class metierAdherent
 {
 
 	//CONSTRUCTEUR-----------------------------------------------------------------------------
-	public function __construct(private metierEquipe $lEquipe, private int $idAdherent = 0, private string $nomAdherent = '', private string $prenomAdherent = '', private int $ageAdherent = 0, private string $sexeAdherent = '', private string $loginAdherent = '', private string $pwdAdherent = '')
+	public function __construct(private conteneurEquipe $lesEquipes, private int $idAdherent = 0, private string $nomAdherent = '', private string $prenomAdherent = '', private int $ageAdherent = 0, private string $sexeAdherent = '', private string $loginAdherent = '', private string $pwdAdherent = '')
 	{
-		$this->lEquipe->ajoutEquipe($this);
 	}
+
 
 	//ACCESSEURS-------------------------------------------------------------------------------
 	public function __get($attribut)
@@ -35,14 +35,6 @@ class metierAdherent
 			case 'pwdAdherent':
 				return $this->pwdAdherent;
 				break;
-			case 'idEquipe':
-				return $this->lEquipe->idEquipe;
-				break;
-			case 'nomEquipe':
-				return $this->lEquipe->nomEquipe;
-				break;
-			case 'nomEntraineur':
-				return $this->lEquipe->nomEntraineur;
 			default:
 				$trace = debug_backtrace();
 				trigger_error('Propriété non-accessible via _get() :' . $attribut . 'dans ' . $trace[0]['file'] . ' à la ligne' . $trace[0]['line'], E_USER_NOTICE);
@@ -75,10 +67,10 @@ class metierAdherent
 				$this->pwdAdherent = $laValeurDeLAttribut;
 				break;
 			case 'idEquipe':
-				$this->lEquipe->idEquipe = $laValeurDeLAttribut;
+				$this->lesEquipe->idEquipe = $laValeurDeLAttribut;
 				break;
 			case 'nomEquipe':
-				$this->lEquipe->nomEquipe = $laValeurDeLAttribut;
+				$this->lesEquipe->nomEquipe = $laValeurDeLAttribut;
 				break;
 			default:
 				$trace = debug_backtrace();
@@ -90,6 +82,9 @@ class metierAdherent
 	// méthode permettant d'afficher tous les attributs d'un seul coup
 	public function afficheAdherent()
 	{
-		return $this->nomAdherent . '|' . $this->prenomAdherent . '|' . $this->ageAdherent . '|' . $this->sexeAdherent . '|' . $this->loginAdherent . '|' . $this->lEquipe->nomSpecialite . '|' . $this->nomEntraineur . '\n';
+		$liste = $this->nomAdherent . '|' . $this->prenomAdherent . '|' . $this->ageAdherent . '|' . $this->sexeAdherent . '|' . $this->loginAdherent . '|' . $this->lesEquipes->leNomDesEquipes() . '\n';
+
+
+		return  $liste;
 	}
 }

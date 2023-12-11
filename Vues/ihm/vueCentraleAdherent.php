@@ -17,8 +17,7 @@ class vueCentraleAdherent
 							<th scope="col">Age</th>
 							<th scope="col">Sexe</th>
 							<th scope="col">Login</th>
-							<th scope="col">Specialite</th>
-							<th scope="col">Entraineur</th>
+							<th scope="col">Equipe</th>
 						</tr>
 					</thead>
 					<tbody>';
