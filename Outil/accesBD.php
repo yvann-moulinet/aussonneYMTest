@@ -239,8 +239,9 @@ class accesBD
 		return $sonId;
 	}
 
-	public function insertCompetent($listeSpecialites, $sonId)
+	public function insertCompetent($listeSpecialites)
 	{
+		$sonId = $this->donneProchainIdentifiant("ENTRAINEUR", "idEntraineur");
 		$moment = date("Y-m-d H:i:s");
 		$lesSpes = '';
 
@@ -257,7 +258,7 @@ class accesBD
 		}
 		//ajout de l'action dans logActionUtilisateur
 		$log = $this->conn->prepare("INSERT INTO logActionUtilisateur (action,temps,idUtilisateur) VALUES (?,?,?)");
-		$log->bindValue(3, 'insert specialite' . $sonId . ' : ' . $lesSpes);
+		$log->bindValue(1, 'insert specialite' . $sonId . ' : ' . $lesSpes);
 		$log->bindValue(2, $moment);
 		$log->bindValue(3, $_SESSION['login']);
 		if (!$log->execute())

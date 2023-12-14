@@ -38,9 +38,7 @@ switch ($action)
 			}
 			$this->tousLesVacataires->ajouterUnVacataire($this->maBD->donneProchainIdentifiant("ENTRAINEUR") + 1, $nomEntraineur, $loginEntraineur, $pwdEntraineur, $telEntraineur, new conteneurSpecialite($listeSpecialites));
 			$this->maBD->insertVacataire($nomEntraineur, $loginEntraineur, $pwdEntraineur, $telEntraineur);
-
-			$sonId = $this->maBD->donneProchainIdentifiant("ENTRAINEUR");
-			$this->maBD->insertCompetent($listeSpecialites, $sonId);
+			$this->maBD->insertCompetent($listeSpecialites);
 			$vue = new vueCentraleConnexion();
 			$liste = $this->maBD->afficheListeSelect();
 			$vue->afficheMenuAdmin($liste);
