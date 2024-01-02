@@ -1,10 +1,5 @@
 					<div class="row pt-5">
-						<div class="col-2"></div>
-						<div class="col-8">
 							<UL id=zoneResultat></UL>
-						</div>
-						<div class="col-2">
-						</div>
 					</div>
 					<footer class="text-center text-white fixed-bottom" style="background-color: #FFFFFF;">
 

@@ -34,6 +34,7 @@ class conteneurEquipe
 				$uneEquipe->ageMaxEquipe = $unAgeMaxEquipe;
 				$uneEquipe->sexeEquipe = $unSexeEquipe;
 				$uneEquipe->idSpecialite = $uneSpecialite->idSpecialite;
+				$uneEquipe->nomSpecialite = $uneSpecialite->nomSpecialite;
 				$uneEquipe->idEntraineur = $unEntraineur->idEntraineur;
 				$uneEquipe->nomEntraineur = $unEntraineur->nomEntraineur;
 			}
@@ -74,7 +75,19 @@ class conteneurEquipe
 
 		foreach ($this->lesEquipes as $uneEquipe)
 		{
-			array_push($return, $uneEquipe->nomEquipe . ' (' . $uneEquipe->nomEntraineur . ')');
+		array_push($return, $uneEquipe->nomEquipe /*. ' (' . $uneEquipe->nomEntraineur . ')'*/);
+		}
+
+		return implode(', ', $return);
+	}
+
+	public function specialiteDesEquipes()
+	{
+		$return = array();
+
+		foreach ($this->lesEquipes as $uneEquipe)
+		{
+		array_push($return, $uneEquipe->nomSpecialite /*. ' (' . $uneEquipe->nomEntraineur . ')'*/);
 		}
 
 		return implode(', ', $return);

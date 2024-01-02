@@ -1,38 +1,38 @@
 <?php
-	
-	class vueCentraleConnexion
+
+class vueCentraleConnexion
+{
+	public function __construct()
 	{
-		public function __construct()
+	}
+
+	public function AfficherMenuContextuel($role, $existe, $liste)
+	{
+		if ($existe == 1)
 		{
-			
-		}
-		
-		public function AfficherMenuContextuel($role,$existe,$liste)
-		{
-			if($existe==1)
-			{	switch($role)
-				{
-					case "2" : 
-						$this->afficheMenuAdherent($liste);
-						break;
-					case "3" :
-						$this->afficheMenuEntraineur($liste);
-						break;
-					case "1" : 
-						$this->afficheMenuAdmin($liste);
-						break;
-				}
-			}
-			else
+			switch ($role)
 			{
-				echo "Erreur de connexion";
-				$this->afficheMenuInternaute();
+				case "2":
+					$this->afficheMenuAdherent($liste);
+					break;
+				case "3":
+					$this->afficheMenuEntraineur($liste);
+					break;
+				case "1":
+					$this->afficheMenuAdmin($liste);
+					break;
 			}
 		}
-		
-		public function afficheMenuInternaute()
+		else
 		{
-			echo '<div class="dropdown col">
+			echo "Erreur de connexion";
+			$this->afficheMenuInternaute($liste);
+		}
+	}
+
+	public function afficheMenuInternaute($liste)
+	{
+		echo '<div class="dropdown col">
 				<button class="btn bg-transparent dropdown-toogle" type="button" id="menuEntraineur" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					Menu Entraîneur 
 					<span class="caret"></span>
@@ -73,17 +73,16 @@
 		<div class="container">
 			<div class="row">
 				<div class ="col-md-2 col-xs-12 infosComplementaires">';
-					require "vues/ihm/connexion.php";
-					require "vues/ihm/deconnexion.php";
-					echo'<br> espace pour des infos complémentaires type les news le login, le password....';
-					
-				echo '</div>
-				<div class="col-md-10 col-xs-12 ">';
-						
-		}
-		public function afficheMenuAdherent($liste)
-		{
-			echo '<div class="dropdown col">
+		require "vues/ihm/connexion.php";
+		require "vues/ihm/deconnexion.php";
+		echo '<br> espace pour des infos complémentaires type les news le login, le password....';
+		echo '<p class ="pt-3"> ' . $liste . ' </p>';
+		echo '</div>
+				<div class="col-md-10 col-xs-12 "style=" height: calc(100vh - 22rem); overflow: auto;">';
+	}
+	public function afficheMenuAdherent($liste)
+	{
+		echo '<div class="dropdown col">
 				<button class="btn bg-transparent dropdown-toogle" type="button" id="menuAdherent" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 					Mon profil 
 					<span class="caret"></span>
@@ -108,17 +107,16 @@
 		<div class="container">
 			<div class="row">
 				<div class ="col-md-2 col-xs-12 infosComplementaires">';
-					require "vues/ihm/connexion.php";
-					require "vues/ihm/deconnexion.php";
-					echo'<br> espace pour des infos complémentaires type les news le login, le password....';
-					echo '<p class ="pt-3"> '.$liste.' </p>';
-				echo '</div>
-				<div class="col-md-10 col-xs-12 align-items-center ">';
-				
-		}
-		public function afficheMenuEntraineur($liste)
-		{
-			echo '<div class="dropdown col">
+		require "vues/ihm/connexion.php";
+		require "vues/ihm/deconnexion.php";
+		echo '<br> espace pour des infos complémentaires type les news le login, le password....';
+		echo '<p class ="pt-3"> ' . $liste . ' </p>';
+		echo '</div>
+				<div class="col-md-10 col-xs-12 align-items-center "style=" height: calc(100vh - 22rem); overflow: auto;">';
+	}
+	public function afficheMenuEntraineur($liste)
+	{
+		echo '<div class="dropdown col">
 				<button class="btn bg-transparent dropdown-toogle" type="button" id="menuEntraineur" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					Mon profil 
 					<span class="caret"></span>
@@ -143,17 +141,17 @@
 			<div class="row">
 				<div class ="col-md-2 col-xs-12 infosComplementaires">
 					';
-					require "vues/ihm/connexion.php";
-					require "vues/ihm/deconnexion.php";
-					echo'<br> espace pour des infos complémentaires type les news le login, le password....';
-					echo $liste;
-				echo '</div>
-				<div class="col-md-10 col-xs-12 ">';
-		}
-		
-		public function afficheMenuAdmin($liste)
-		{
-			echo'<div class="dropdown col">
+		require "vues/ihm/connexion.php";
+		require "vues/ihm/deconnexion.php";
+		echo '<br> espace pour des infos complémentaires type les news le login, le password....';
+		echo $liste;
+		echo '</div>
+				<div class="col-md-10 col-xs-12 "style=" height: calc(100vh - 22rem); overflow: auto;">';
+	}
+
+	public function afficheMenuAdmin($liste)
+	{
+		echo '<div class="dropdown col">
 				<button class="btn bg-transparent dropdown-toogle" type="button" id="menuEntraineur" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					Menu Entraîneur 
 					<span class="caret"></span>
@@ -169,8 +167,18 @@
 					<span class="caret"></span>
 				</button>
 				<ul class="dropdown-menu" aria-labelledby="menuSpecialite">
-					<li><a class="dropdown-item" href=index.php?vue=Specialite&action=ajouter>Ajouter une équipe</a></li>
-					<li><a class=dropdown-item href=index.php?vue=Specialite&action=modifier>Modifier une équipe</a></li>
+					<li><a class="dropdown-item" href=index.php?vue=Specialite&action=ajouter>Ajouter une spécialité</a></li>
+					<li><a class=dropdown-item href=index.php?vue=Specialite&action=modifier>Modifier une spécialité</a></li>
+				</ul>
+			</div>
+			<div class="dropdown col">
+				<button class="btn bg-transparent dropdown-toogle" type="button" id="menuEquipe" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+					Menu Equipe
+					<span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu" aria-labelledby="menuSpecialite">
+					<li><a class="dropdown-item" href=index.php?vue=Specialite&action=ajouter>Ajouter une Equipe</a></li>
+					<li><a class=dropdown-item href=index.php?vue=Specialite&action=modifier>Modifier une Equipe</a></li>
 				</ul>
 			</div>
 			<div class="dropdown col">
@@ -187,14 +195,11 @@
 		<div class="container">
 			<div class="row">
 				<div class ="col-md-2 col-xs-12 infosComplementaires">';
-					require "vues/ihm/connexion.php";
-					require "vues/ihm/deconnexion.php";
-					echo'<br> espace pour des infos complémentaires type les news le login, le password....';
-					echo $liste;
-				echo '</div>
-				<div class="col-md-10 col-xs-12 ">';
-				
-		}
-		
-		
+		require "vues/ihm/connexion.php";
+		require "vues/ihm/deconnexion.php";
+		echo '<br> espace pour des infos complémentaires type les news le login, le password....';
+		echo $liste;
+		echo '</div>
+				<div class="col-md-10 col-xs-12 "style=" height: calc(100vh - 22rem); overflow: auto;">';
 	}
+}

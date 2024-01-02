@@ -13,7 +13,8 @@ switch ($action)
 				case "Deconnexion" :
 					session_destroy();
 					$vue=new vueCentraleConnexion();
-					$vue->afficheMenuInternaute();
+					$liste = $this->maBD->afficheListeSelect();
+					$vue->afficheMenuInternaute($liste);
 					break;
 				
 			}

@@ -69,11 +69,13 @@ class conteneurSpecialite
 
 	public function checkboxSpecialiteAuFormatHTML()
 	{
-		$liste = "";
+		$liste = "<select name=\"idSpecialite[]\" multiple>";
 
 		foreach ($this->lesSpecialites as $uneSpecialite) {
-			$liste .= "<input type='checkbox' name='idSpecialite[]' value='" . $uneSpecialite->idSpecialite . "'>" . " " .$uneSpecialite->nomSpecialite . "<br>";
+			$liste .= "<option value='" . $uneSpecialite->idSpecialite . "'>" . " " .$uneSpecialite->nomSpecialite . "</option>";
 		}
+
+		$liste .= "</select>";
 
 		return $liste;
 	}

@@ -76,4 +76,8 @@ class metierEntraineur
 	{
 		return $this->idEntraineur . ' | ' . $this->nomEntraineur . ' | ' . $this->loginEntraineur . ' | ' . $this->lesSpecialites->leNomDesSpecialites(). ' | ';
 	}
+	public function nomEntraineur()
+	{
+		return $this->nomEntraineur . ' \n ';
+	}
 }

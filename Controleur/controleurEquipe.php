@@ -11,7 +11,8 @@ switch ($action)
 					break;
 				case "visualiser" :
 					$vue=new vueCentraleConnexion();
-					$vue->afficheMenuInternaute();
+					$liste = $this->maBD->afficheListeSelect();
+					$vue->afficheMenuInternaute($liste);
 					$message = $this->toutesLesEquipes->listeDesEquipes();
 					$vue = new vueCentraleEquipe();
 					$vue->visualiserEquipe($message);

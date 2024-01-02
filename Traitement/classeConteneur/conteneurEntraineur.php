@@ -34,6 +34,16 @@ class conteneurEntraineur
 		
 		return $liste;
 		}
+		public function listeDesNomEntraineurs()
+		{
+		$liste = '';
+		foreach ($this->lesEntraineurs as $unEntraineur)
+			{	
+				$liste = $liste.$unEntraineur->nomEntraineur();
+			}
+		
+		return $liste;
+		}
 		
 	public function lesEntraineursAuFormatHTML()
 		{

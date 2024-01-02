@@ -28,14 +28,7 @@ switch ($action)
 			$loginEntraineur = $_POST['loginEntraineur'];
 			$pwdEntraineur = $_POST['pwdEntraineur'];
 			$telEntraineur = $_POST['numTelVacataire'];
-			$listeSpecialites = array(); //cette liste contient les id des spécialités du nouvel entraineur 
-			for ($i = 0; $i < $this->toutesLesSpecialites->nbSpecialite(); $i++)
-			{
-				if (isset($_POST['idSpecialite' . $i + 1]))
-				{
-					array_push($listeSpecialites, $i + 1);
-				}
-			}
+			$listeSpecialites = $_POST['idSpecialite']; //cette liste contient les id des spécialités du nouvel entraineur 
 			$this->tousLesVacataires->ajouterUnVacataire($this->maBD->donneProchainIdentifiant("ENTRAINEUR") + 1, $nomEntraineur, $loginEntraineur, $pwdEntraineur, $telEntraineur, new conteneurSpecialite($listeSpecialites));
 			$this->maBD->insertVacataire($nomEntraineur, $loginEntraineur, $pwdEntraineur, $telEntraineur);
 			$this->maBD->insertCompetent($listeSpecialites);
@@ -50,8 +43,8 @@ switch ($action)
 			$pwdEntraineur = $_POST['pwdEntraineur'];
 			$dateEmbEntraineur = $_POST['dateEmbaucheTitulaire'];
 			$idSpecialite = $_POST['idSpecialite'];
-			$this->tousLesTitulaires->ajouterUnTitulaire($this->maBD->donneProchainIdentifiant("ENTRAINEUR") + 1, $nomEntraineur,  $loginEntraineur, $pwdEntraineur, $dateEmbEntraineur, new conteneurSpecialite($idSpecialite));
-			$this->maBD->insertTitulaire($nomEntraineur, $loginEntraineur, $pwdEntraineur, $dateEmbEntraineur, $idSpecialite);
+			$this->tousLesTitulaires->ajouterUnTitulaire($this->maBD->donneProchainIdentifiant("ENTRAINEUR") + 1, $nomEntraineur,  $loginEntraineur, $pwdEntraineur, $dateEmbEntraineur, new conteneurSpecialite($listeSpecialites));
+			$this->maBD->insertTitulaire($nomEntraineur, $loginEntraineur, $pwdEntraineur, $dateEmbEntraineur);
 			$vue = new vueCentraleConnexion();
 			$liste = $this->maBD->afficheListeSelect();
 			$vue->afficheMenuAdmin($liste);
@@ -59,16 +52,39 @@ switch ($action)
 		break;
 	case "visualiser":
 		$vue = new vueCentraleConnexion();
-		$vue->afficheMenuInternaute();
+		$liste = $this->maBD->afficheListeSelect();
+		$vue->afficheMenuInternaute($liste);
 		$liste = $this->tousLesTitulaires->listeDesTitulaires();
 		$liste = $liste . $this->tousLesVacataires->listeDesVacataires();
 		$vue = new vueCentraleEntraineur();
 		$vue->VisualiserEntraineur($liste);
 		break;
+
 	case "modifier":
 		$vue = new vueCentraleConnexion();
+		$liste = $this->maBD->afficheListeSelect();
 		$vue->afficheMenuAdmin($liste);
+		$liste = $this->tousLesEntraineurs->lesEntraineursAuFormatHTML();
+		$vue = new vueCentraleEntraineur();
+		$vue->modifierEntraineur($liste);
 		//reste à faire
+		break;
+	case "saisirModification":
+		$vue = new vueCentraleConnexion();
+		$liste = $this->maBD->afficheListeSelect();
+		$vue->afficheMenuAdmin($liste);
+		$idEntraineur = $_POST['idEntraineur'];
+		$vue = new vueCentraleEntraineur();
+		$listeSpecialite = $this->toutesLesSpecialites->checkboxSpecialiteAuFormatHTML();
+		$vue->saisirModifEntraineur($listeSpecialite, $idEntraineur);
+		break;
+	case "enregistrerModification":
+		$idEntraineur = $_POST['idEntraineur'];
+		$listeSpecialites = $_POST['idSpecialite'];
+		$this->maBD->modifEntraineur($idEntraineur, $listeSpecialites);
+		$vue = new vueCentraleConnexion();
+		$liste = $this->maBD->afficheListeSelect();
+		$vue->afficheMenuAdmin($liste);
 		break;
 	case "visualiserSesEquipes":
 		$vue = new vueCentraleConnexion();

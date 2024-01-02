@@ -82,8 +82,14 @@ class metierAdherent
 	// méthode permettant d'afficher tous les attributs d'un seul coup
 	public function afficheAdherent()
 	{
-		$liste = $this->nomAdherent . '|' . $this->prenomAdherent . '|' . $this->ageAdherent . '|' . $this->sexeAdherent . '|' . $this->loginAdherent . '|' . $this->lesEquipes->leNomDesEquipes() . '\n';
+		$liste = $this->nomAdherent . '|' . $this->prenomAdherent . '|' . $this->ageAdherent . '|' . $this->sexeAdherent . '|' . $this->loginAdherent . '|' . $this->lesEquipes->leNomDesEquipes() . '|' . $this->lesEquipes->specialiteDesEquipes(). '\n';
 
+		return  $liste;
+	}
+
+	public function afficheIdAdherent()
+	{
+		$liste = $this->idAdherent ;
 
 		return  $liste;
 	}

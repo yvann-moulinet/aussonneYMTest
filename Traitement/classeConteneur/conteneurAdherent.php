@@ -35,6 +35,18 @@ class conteneurAdherent
 		}
 		return $infos;
 	}
+	public function idAdherent()
+	{
+		$infos = '';
+		foreach ($this->lesAdherents as $unAdherent)
+		{
+			if ($_SESSION['login'] == $unAdherent->loginAdherent)
+			{
+				$infos = $unAdherent->afficheIdAdherent();
+			}
+		}
+		return $infos;
+	}
 
 	public function listeDesAdherents()
 	{

@@ -18,6 +18,7 @@ class vueCentraleAdherent
 							<th scope="col">Sexe</th>
 							<th scope="col">Login</th>
 							<th scope="col">Equipe</th>
+							<th scope="col">Specialité</th>
 						</tr>
 					</thead>
 					<tbody>';
@@ -59,9 +60,10 @@ class vueCentraleAdherent
 		</form>';
 	}
 
-	public function informationAdherent($id)
+	public function informationAdherent($id, $coequipier)
 	{
 		$listeAdherent = explode("|", $id);
+		$listeAdherent[6] = str_replace('\n', '', $listeAdherent[6]);
 		//print_r($listeAdherent);
 		echo '<div class="row">
 				<div class="col-sm">
@@ -75,13 +77,57 @@ class vueCentraleAdherent
 									Age : ' . $listeAdherent[2] . '<br> 
 									Sexe : ' . $listeAdherent[3] . '<br> 
 									Login : ' . $listeAdherent[4] . '<br> 
-									Specialite : ' . $listeAdherent[5] . '<br>
+									Specialite : ' . $listeAdherent[6] . '<br>
 									</p>
 						</div>
 					</div>
 				</div>
 				<div class="col-sm">
 				</div>
-		</div>';
+			</div>';
+
+		$equipesAdherents = array();
+
+		// Remplir le tableau associatif avec les adhérents et les équipes
+		foreach ($coequipier as $adherent)
+		{
+			$nomAdherent = $adherent[0];
+			$nomEquipe = $adherent[1];
+
+			// Vérifier si l'équipe existe déjà dans le tableau
+			if (!isset($equipesAdherents[$nomEquipe]))
+			{
+				$equipesAdherents[$nomEquipe] = array();
+			}
+
+			// Ajouter l'adhérent à l'équipe respective
+			$equipesAdherents[$nomEquipe][] = $nomAdherent;
+		}
+
+		echo '<div class="pl-3 pt-3">
+        <table class="table table-striped table-bordered table-sm">
+            <thead>
+                <tr>
+                    <th scope="col">Equipe</th>
+                    <th scope="col">Coéquipiers</th>
+                </tr>
+            </thead>
+            <tbody>';
+
+		foreach ($equipesAdherents as $nomEquipe => $adherents)
+		{
+			echo '<tr>
+                <td>
+                    ' . $nomEquipe . '
+                </td>
+                <td>
+                    ' . implode(", ", $adherents) . '
+                </td>
+            </tr>';
+		}
+
+		echo '</tbody>';
+		echo '</table>';
+		echo '</div>';
 	}
 }

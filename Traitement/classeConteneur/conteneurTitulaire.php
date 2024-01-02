@@ -47,14 +47,15 @@ class conteneurTitulaire
 
 	public function donneObjetTitulaireDepuisNumero($unIdTitulaire)
 	{
-		$trouve = false;
+
 		$leBonTitulaire = null;
 		foreach ($this->lesTitulaires as $unTitulaire)
 		{
 			if ($unTitulaire->idEntraineur == $unIdTitulaire)
 			{
-				$trouve = true;
+
 				$leBonTitulaire = $unTitulaire;
+				
 			}
 		}
 		return $leBonTitulaire;

@@ -48,13 +48,14 @@ class conteneurVacataire
 
 	public function donneObjetVacataireDepuisNumero($unIdVacataire)
 	{
-		$trouve = false;
 		$leBonVacataire = null;
-		foreach ($this->lesVacataires as $unVacataire);
-		if ($unVacataire->idEntraineur == $unIdVacataire)
+		foreach ($this->lesVacataires as $unVacataire)
 		{
-			$trouve = true;
-			$leBonVacataire = $unVacataire;
+			if ($unVacataire->idEntraineur == $unIdVacataire)
+			{
+				$leBonVacataire = $unVacataire;
+				
+			}
 		}
 
 		return $leBonVacataire;
@@ -63,9 +64,14 @@ class conteneurVacataire
 	public function chercherExistanceIdVacataire($unId)
 	{
 		$trouve = false;
-		foreach ($this->lesVacataires as $unVacataire);
-		if ($unVacataire->idEntraineur == $unId)
-			$trouve = true;
+		foreach ($this->lesVacataires as $unVacataire)
+		{
+			if ($unVacataire->idEntraineur == $unId)
+			{
+				$trouve = true;
+				break;
+			}
+		}
 		return $trouve;
 	}
 }

@@ -43,5 +43,6 @@
 		<div class="col-md-2 col-xs-12 infosComplementaires">
 			<?php require "vues/ihm/connexion.php"; ?>
 			<?php require "vues/ihm/deconnexion.php";  ?>
+			<p class ="pt-3"></p>
 		</div>
 		<div class="col-md-10 col-xs-12 ">

@@ -347,15 +347,15 @@ class controleur
 		$nbA = 0;
 		while ($nbA < sizeof($resultatEquipe))
 		{
-
 			if ($this->tousLesVacataires->chercherExistanceIdVacataire($resultatEquipe[$nbA][7]))
 			{
 				$this->toutesLesEquipes->ajouterUneEquipe($resultatEquipe[$nbA][0], $resultatEquipe[$nbA][1], $resultatEquipe[$nbA][2], $resultatEquipe[$nbA][3], $resultatEquipe[$nbA][4], $resultatEquipe[$nbA][5], $this->toutesLesSpecialites->donneObjetSpecialiteDepuisNumero($resultatEquipe[$nbA][6]), $this->tousLesVacataires->donneObjetVacataireDepuisNumero($resultatEquipe[$nbA][7]));
 			}
-			if ($this->tousLesTitulaires->chercherExistanceIdTitulaire($resultatEquipe[$nbA][7]))
+			else if ($this->tousLesTitulaires->chercherExistanceIdTitulaire($resultatEquipe[$nbA][7]))
 			{
 				$this->toutesLesEquipes->ajouterUneEquipe($resultatEquipe[$nbA][0], $resultatEquipe[$nbA][1], $resultatEquipe[$nbA][2], $resultatEquipe[$nbA][3], $resultatEquipe[$nbA][4], $resultatEquipe[$nbA][5], $this->toutesLesSpecialites->donneObjetSpecialiteDepuisNumero($resultatEquipe[$nbA][6]), $this->tousLesTitulaires->donneObjetTitulaireDepuisNumero($resultatEquipe[$nbA][7]));
 			}
+
 			$nbA++;
 		}
 	}

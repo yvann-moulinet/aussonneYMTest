@@ -27,7 +27,7 @@
 		{
 			$listeEntraineur = explode('\n', $liste);
 
-			echo '<table class="table table-striped table-bordered table-sm ">
+			echo '<table class="table table-striped table-bordered table-sm">
 					<thead>
 						<tr>
 							<th scope="col">Id</th>
@@ -67,7 +67,8 @@
 
 			echo '<form action=index.php?vue=Entraineur&action=enregistrer method=POST>';
 
-			switch ($typeEntraineur) {
+			switch ($typeEntraineur)
+			{
 				case 'Vacataire':
 					echo '<legend>Information du Vacataire</legend>
 							
@@ -96,8 +97,8 @@
 										<input type=text name=pwdEntraineur id=pwdEntraineur required=true>
 									  </td>
 									  <td>';
-										echo $listeSpecialite;
-										echo '</td>
+					echo $listeSpecialite;
+					echo '</td>
 									</tr>
 									<tr colspan=5>
 									  <input type=hidden name=typeEntraineur value=' . $typeEntraineur . '>
@@ -105,6 +106,7 @@
 									</tr>
 								</tbody>
 							</table>
+							m\'intenir la touche Ctrl appuiyer pour sélectionner plusieur spécialités
 							
 					</form>';
 					break;
@@ -137,8 +139,8 @@
 										<input type=text name=pwdEntraineur id=pwdEntraineur required=true>
 									  </td>
 									  <td>';
-										echo $listeSpecialite;
-										echo '</td>
+					echo $listeSpecialite;
+					echo '</td>
 									</tr>
 									<tr colspan=5>
 									  <input type=hidden name=typeEntraineur value=' . $typeEntraineur . '>
@@ -146,9 +148,39 @@
 									</tr>
 								</tbody>
 							</table>
-							
+							m\'intenir la touche Ctrl appuiyer pour sélectionner plusieur spécialités
 					</form>';
 					break;
 			}
+		}
+
+		public function modifierEntraineur($liste)
+		{
+			echo '<form action=index.php?vue=Entraineur&action=saisirModification method=POST>
+				<legend class="text-center">Choisir L \'entraineur à modifier : ' . $liste . ' </legend>';
+			echo '<div class="text-center">
+			 <button type="submit" class="btn btn-primary text-center">Valider</button>
+			 </div>
+			 </form>';
+		}
+		public function saisirModifEntraineur($listeSpecialite, $idEntraineur)
+		{
+
+			echo '<form action=index.php?vue=Entraineur&action=enregistrerModification method=POST>';
+			echo '<input type="hidden" name="idEntraineur" value="' . $idEntraineur . '">';
+			echo '<div class="row pt-5 text-center">
+				<div class="col-9">
+					<legend>Choisir les spécialités que l\'entraineur pourras enseigner : </legend>
+					m\'intenir la touche Ctrl appuiyer pour sélectionner plusieur spécialités
+				</div>
+				<div class="col-3 text-left">
+					<legend>' . $listeSpecialite . '</legend>
+				</div>
+			</div>
+			<div class="text-center">			
+				<button type="submit" class="btn btn-primary">Valider</button>
+			</div>
+							
+			</form>';
 		}
 	}

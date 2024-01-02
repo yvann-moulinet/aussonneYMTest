@@ -15,7 +15,7 @@ class accesBD
 		$this->hote = "localhost";
 		$this->login = "root";
 		$this->passwd = "";
-		$this->base = "ym_aussonnetest";
+		$this->base = "ym_aussonne";
 		$this->connexion();
 	}
 	private function connexion()
@@ -124,7 +124,7 @@ class accesBD
 	public function afficheListeDesNouvelleAjax()
 	{
 		$requete = 'SELECT * FROM nouvelle WHERE codeTheme = ' . $_POST['ref'] . ';';
-		$liste = '<table class="table table-striped table-bordered table-sm">
+		$liste = '<table class="table table-striped table-bordered table-sm w-100">
 					<thead>
 						<tr>
 							<th>Nouvelle</th>
@@ -174,7 +174,7 @@ class accesBD
 		return $sonId;
 	}
 
-	public function insertTitulaire($unNomEntraineur, $unLoginEntraineur, $unPwdEntraineur, $uneDateEmbauche, $idSpecialite)
+	public function insertTitulaire($unNomEntraineur, $unLoginEntraineur, $unPwdEntraineur, $uneDateEmbauche)
 	{
 		$sonId = $this->donneProchainIdentifiant("ENTRAINEUR", "idEntraineur");
 		$requete = $this->conn->prepare("INSERT INTO ENTRAINEUR (idEntraineur,nomEntraineur,loginEntraineur,pwdEntraineur) VALUES (?,?,?,?)");
@@ -193,13 +193,6 @@ class accesBD
 		if (!$requete->execute())
 		{
 			die("Erreur dans insert Titulaire : " . $requete->errorCode());
-		}
-		$requete = $this->conn->prepare("INSERT INTO competent (idSpecialite,idEntraineur) VALUES (?,?)");
-		$requete->bindValue(1, $idSpecialite);
-		$requete->bindValue(2, $sonId);
-		if (!$requete->execute())
-		{
-			die("Erreur dans insert Vacataire : " . $requete->errorCode());
 		}
 
 		return $sonId;
@@ -258,7 +251,7 @@ class accesBD
 		}
 		//ajout de l'action dans logActionUtilisateur
 		$log = $this->conn->prepare("INSERT INTO logActionUtilisateur (action,temps,idUtilisateur) VALUES (?,?,?)");
-		$log->bindValue(1, 'insert specialite' . $sonId . ' : ' . $lesSpes);
+		$log->bindValue(1, 'insert entraineur' . ($sonId - 1) . ' : spécialité' . $lesSpes);
 		$log->bindValue(2, $moment);
 		$log->bindValue(3, $_SESSION['login']);
 		if (!$log->execute())
@@ -268,8 +261,29 @@ class accesBD
 	}
 
 	/***********************************************************************************************
-	méthode qui va permettre de modifier les éléments d'une équipe.
+	toute les fonction d'update.
 	 ***********************************************************************************************/
+	public function modifEntraineur($idEntraineur, $listeSpecialites)
+	{
+		$requete = $this->conn->prepare("DELETE FROM competent WHERE idEntraineur = ?");
+		$requete->bindValue(1, $idEntraineur);
+		if (!$requete->execute())
+		{
+			die("Erreur dans modif Specialite : " . $requete->errorCode());
+		}
+		foreach ($listeSpecialites as $idSpe)
+		{
+			$req = $this->conn->prepare("INSERT INTO competent (idSpecialite, idEntraineur) VALUES (?,?)");
+			$req->bindValue(1, $idSpe);
+			$req->bindValue(2, $idEntraineur);
+			if (!$req->execute())
+			{
+				die("<h1>ERREUR<br>Connexion à la base de données impossible.</h1>");
+			}
+		}
+		return $idEntraineur;
+	}
+
 	public function modifSpecialite($idSpecialite, $unNomSpecialite)
 	{
 		$requete = $this->conn->prepare("UPDATE specialite SET nomSpecialite = ? where idSpecialite = ?");
@@ -460,6 +474,36 @@ class accesBD
 		INNER JOIN entraineur ON entraineur.idEntraineur = equipe.idEntraineur 
 		WHERE pouvoir.idAdherent = $idAdherent";
 		$requete = $this->conn->prepare($stringQuery);
+		$nbTuples = 0;
+		$lesInfos = array();
+		if ($requete->execute())
+		{
+			while ($row = $requete->fetch(PDO::FETCH_NUM))
+			{
+				$lesInfos[$nbTuples] = $row;
+				$nbTuples++;
+			}
+		}
+		else
+		{
+			die('Problème dans chargement : ' . $requete->errorCode());
+		}
+		return $lesInfos;
+	}
+	public function afficheCoequipier($idAdherent)
+	{
+		$query = "SELECT adherent.nomAdherent, equipe.nomEquipe
+		FROM adherent
+		INNER JOIN pouvoir ON adherent.idAdherent = pouvoir.idAdherent
+		INNER JOIN equipe ON pouvoir.idEquipe = equipe.idEquipe
+		WHERE equipe.idEquipe IN (
+			SELECT idEquipe
+			FROM pouvoir
+			WHERE idAdherent = $idAdherent
+		)
+		AND adherent.idAdherent <> $idAdherent  -- Exclure Dupont Pierre
+		ORDER BY adherent.idAdherent, equipe.idEquipe";
+		$requete = $this->conn->prepare($query);
 		$nbTuples = 0;
 		$lesInfos = array();
 		if ($requete->execute())
