@@ -251,7 +251,7 @@ class accesBD
 		}
 		//ajout de l'action dans logActionUtilisateur
 		$log = $this->conn->prepare("INSERT INTO logActionUtilisateur (action,temps,idUtilisateur) VALUES (?,?,?)");
-		$log->bindValue(1, 'insert entraineur' . ($sonId - 1) . ' : spécialité' . $lesSpes);
+		$log->bindValue(1, 'insert entraineur ' . ($sonId - 1) . ' : spécialité ' . $lesSpes);
 		$log->bindValue(2, $moment);
 		$log->bindValue(3, $_SESSION['login']);
 		if (!$log->execute())
@@ -263,13 +263,13 @@ class accesBD
 	/***********************************************************************************************
 	toute les fonction d'update.
 	 ***********************************************************************************************/
-	public function modifEntraineur($idEntraineur, $listeSpecialites)
+	public function modifEntraineur($idEntraineur, $listeSpecialites, $nomEntraineur, $loginEntraineur, $pwdEntraineur, $dateOuTel, $vacataire, $titulaire)
 	{
-		$requete = $this->conn->prepare("DELETE FROM competent WHERE idEntraineur = ?");
-		$requete->bindValue(1, $idEntraineur);
-		if (!$requete->execute())
+		$requeteCompetent = $this->conn->prepare("DELETE FROM competent WHERE idEntraineur = ?");
+		$requeteCompetent->bindValue(1, $idEntraineur);
+		if (!$requeteCompetent->execute())
 		{
-			die("Erreur dans modif Specialite : " . $requete->errorCode());
+			die("Erreur dans modif Specialite : " . $requeteCompetent->errorCode());
 		}
 		foreach ($listeSpecialites as $idSpe)
 		{
@@ -281,6 +281,63 @@ class accesBD
 				die("<h1>ERREUR<br>Connexion à la base de données impossible.</h1>");
 			}
 		}
+		if ($vacataire)
+		{
+			$requeteVacataire = $this->conn->prepare("UPDATE entraineur SET nomEntraineur = ?, loginEntraineur = ?, pwdEntraineur = ?, WHERE idEntraineur = ?");
+			$requeteVacataire->bindValue(1, $idEntraineur);
+			$requeteVacataire->bindValue(2, $nomEntraineur);
+			$requeteVacataire->bindValue(3, $loginEntraineur);
+			$requeteVacataire->bindValue(4, $pwdEntraineur);
+			if (!$requeteVacataire->execute())
+			{
+				die("Erreur dans modif Specialite : " . $requeteVacataire->errorCode());
+			}
+
+			$reqVacataire = $this->conn->prepare("UPDATE vacataire SET telephoneVacataire = ? WHERE idEntraineur = ?");
+			$reqVacataire->bindValue(1, $dateOuTel);
+			$reqVacataire->bindValue(2, $idEntraineur);
+			if (!$reqVacataire->execute())
+			{
+				die("Erreur dans modif Specialite : " . $reqVacataire->errorCode());
+			}
+		}
+
+		if ($titulaire)
+		{
+			$requeteTitulaire = $this->conn->prepare("UPDATE entraineur SET nomEntraineur = ?, loginEntraineur = ?, pwdEntraineur = ? WHERE idEntraineur = ?");
+			$requeteTitulaire->bindValue(1, $nomEntraineur);
+			$requeteTitulaire->bindValue(2, $loginEntraineur);
+			$requeteTitulaire->bindValue(3, $pwdEntraineur);
+			$requeteTitulaire->bindValue(4, $idEntraineur);
+			if (!$requeteTitulaire->execute())
+			{
+				die("Erreur dans modif Specialite : " . $requeteTitulaire->errorCode());
+			}
+
+			$reqTitulaire = $this->conn->prepare("UPDATE titulaire SET dateEmbauche = ? WHERE idEntraineur = ?");
+			$dateEmbaucheFormatted = date("Y-m-d", strtotime($dateOuTel));
+			$reqTitulaire->bindValue(1, $dateEmbaucheFormatted);
+			$reqTitulaire->bindValue(2, $idEntraineur);
+			if (!$reqTitulaire->execute())
+			{
+				die("Erreur dans modif Specialite : " . $reqTitulaire->errorCode());
+			}
+
+			//ajout de l'action dans logActionUtilisateur
+			$moment = date("Y-m-d H:i:s");
+
+			$log = $this->conn->prepare("INSERT INTO logActionUtilisateur (action,temps,idUtilisateur) VALUES (?,?,?)");
+			$log->bindValue(1, 'update entraineur ' . $idEntraineur);
+			$log->bindValue(2, $moment);
+			$log->bindValue(3, $_SESSION['login']);
+			if (!$log->execute())
+			{
+				die("<h1>ERREUR<br>Connexion à la base de données impossible.</h1>");
+			}
+		}
+
+
+
 		return $idEntraineur;
 	}
 
@@ -501,7 +558,7 @@ class accesBD
 			FROM pouvoir
 			WHERE idAdherent = $idAdherent
 		)
-		AND adherent.idAdherent <> $idAdherent  -- Exclure Dupont Pierre
+		AND adherent.idAdherent <> $idAdherent  -- exclure
 		ORDER BY adherent.idAdherent, equipe.idEquipe";
 		$requete = $this->conn->prepare($query);
 		$nbTuples = 0;

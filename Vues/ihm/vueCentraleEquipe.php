@@ -6,16 +6,18 @@ class vueCentraleEquipe
     {
     }
 
-    public function modifierEquipe($message)
+    public function modifierEquipe($listeEquipe)
     {
-        echo '<form action=index.php?vue=Equipe&action=choixFaitPourModif method = GET>';
-        echo $message;
-        echo ' <input type=hidden name=vue value=Equipe></input>
-				   <input type=hidden name=action value=choixFaitPourModif></input>
-				   <button type="submit" class="btn btn-primary">Valider</button>
-				  </form>
-			';
+        {
+            echo '<form action=index.php?vue=Entraineur&action=saisirModification method=POST>
+                <legend class="text-center">Choisir L \'equipe à modifier : ' . $listeEquipe . ' </legend>';
+            echo '<div class="text-center">
+             <button type="submit" class="btn btn-primary text-center">Valider</button>
+             </div>
+             </form>';
+        }
     }
+
     public function visualiserEquipe($message)
     {
 
@@ -41,5 +43,65 @@ class vueCentraleEquipe
         }
         echo '</tbody>';
         echo '</table>';
+    }
+
+    public function saisirEquipe($listeSpecialite, $listeEntraineur)
+    {
+        echo '<form action=index.php?vue=Entraineur&action=enregistrer method=POST>';
+        echo '<legend>Information de l\'équipe</legend>
+                        
+                        <table class="table table-bordered table-sm table-striped">
+                            <thead>
+                                <tr>
+                                  <th scope="col">nom équipe</th>
+                                  <th scope="col">nombre de place équipe</th>
+                                  <th scope="col">Age minimum</th>
+                                  <th scope="col">Age maximum</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                  <td scope>
+                                    <input type="text" name="nomEquipe" id="nomEquipe" required="true">
+                                  </td>
+                                  <td>
+                                    <input type=text name=placeEquipe id=placeEquipe required=true>
+                                  </td>
+                                  <td>
+                                    <input type=text name=ageMin id=ageMin required=true>
+                                  </td>
+                                  <td>
+                                    <input type=text name=ageMax id=ageMax required=true>
+                                  </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="table table-bordered table-sm table-striped">
+                        <thead>
+                            <tr>
+                              <th scope="col">Sexe équipe</th>
+                              <th scope="col">Spécialité</th>
+                              <th scope="col">Entraineur</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                              <td>
+                              <input type=text name=sexEquipe id=sexEquipe required=true>
+                              </td>
+                              <td>';
+    echo $listeSpecialite;
+    echo '</td>
+                              <td>';
+    echo $listeEntraineur;
+    echo '</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="text-center">
+                    <button type="submit" class="btn btn-primary">Valider</button>
+                    </div>
+                        
+                </form>';
     }
 }

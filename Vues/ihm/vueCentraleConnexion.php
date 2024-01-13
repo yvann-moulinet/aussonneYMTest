@@ -176,9 +176,9 @@ class vueCentraleConnexion
 					Menu Equipe
 					<span class="caret"></span>
 				</button>
-				<ul class="dropdown-menu" aria-labelledby="menuSpecialite">
-					<li><a class="dropdown-item" href=index.php?vue=Specialite&action=ajouter>Ajouter une Equipe</a></li>
-					<li><a class=dropdown-item href=index.php?vue=Specialite&action=modifier>Modifier une Equipe</a></li>
+				<ul class="dropdown-menu" aria-labelledby="menuEquipe">
+					<li><a class="dropdown-item" href=index.php?vue=Equipe&action=ajouter>Ajouter une Equipe</a></li>
+					<li><a class=dropdown-item href=index.php?vue=Equipe&action=modifier>Modifier une Equipe</a></li>
 				</ul>
 			</div>
 			<div class="dropdown col">
@@ -201,5 +201,14 @@ class vueCentraleConnexion
 		echo $liste;
 		echo '</div>
 				<div class="col-md-10 col-xs-12 "style=" height: calc(100vh - 22rem); overflow: auto;">';
+	}
+
+	public function messageRequete()
+	{
+		echo '<div class="text-center h2 pt-4">
+
+		Le changement sur l\'entraineur est prit en compte.
+
+		</div>';
 	}
 }

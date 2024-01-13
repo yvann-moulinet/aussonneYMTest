@@ -67,7 +67,7 @@ class conteneurSpecialite
 		return $liste;
 	}
 
-	public function checkboxSpecialiteAuFormatHTML()
+	public function lesSpecialitesMultipleAuFormatHTML()
 	{
 		$liste = "<select name=\"idSpecialite[]\" multiple>";
 

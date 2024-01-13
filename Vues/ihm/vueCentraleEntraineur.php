@@ -102,11 +102,13 @@
 									</tr>
 									<tr colspan=5>
 									  <input type=hidden name=typeEntraineur value=' . $typeEntraineur . '>
-									  <button type="submit" class="btn btn-primary">Valider</button>
 									</tr>
 								</tbody>
 							</table>
-							m\'intenir la touche Ctrl appuiyer pour sélectionner plusieur spécialités
+							<p class="text-danger">M\'intenir la touche Ctrl appuiyer pour sélectionner plusieur spécialités</p>
+							<div class="text-center pt-3">
+							<button type="submit" class="btn btn-primary">Valider</button>
+							</div>
 							
 					</form>';
 					break;
@@ -144,11 +146,13 @@
 									</tr>
 									<tr colspan=5>
 									  <input type=hidden name=typeEntraineur value=' . $typeEntraineur . '>
-									  <button type="submit" class="btn btn-primary">Valider</button>
 									</tr>
 								</tbody>
 							</table>
-							m\'intenir la touche Ctrl appuiyer pour sélectionner plusieur spécialités
+							<p class="text-danger">M\'intenir la touche Ctrl appuiyer pour sélectionner plusieur spécialités</p>
+							<div class="text-center pt-3">
+							<button type="submit" class="btn btn-primary">Valider</button>
+							</div>
 					</form>';
 					break;
 			}
@@ -163,24 +167,70 @@
 			 </div>
 			 </form>';
 		}
-		public function saisirModifEntraineur($listeSpecialite, $idEntraineur)
+		public function saisirModifEntraineur($listeSpecialite, $idEntraineur, $nomEntraineur, $loginEntraineur, $pwdEntraineur, $dateOuTel, $vacataire, $titulaire)
 		{
 
 			echo '<form action=index.php?vue=Entraineur&action=enregistrerModification method=POST>';
-			echo '<input type="hidden" name="idEntraineur" value="' . $idEntraineur . '">';
+
+			echo '<div class="container pt-5">
+			<p class="h2 text-center pb-3">Modifier entraineur<p>
+			<div class="row justify-content-center">
+				<div class="col-6">
+					<table class="table text-center">
+						<tr>
+							<td>Nom entraineur :</td>
+							<td><input type="text" name="nomEntraineur" id="nomEntraineur" value="' . $nomEntraineur . '" required="true"></td>
+						</tr>
+						<tr>
+							<td>Login entraineur :</td>
+							<td><input type="text" name="loginEntraineur" id="loginEntraineur" value="' . $loginEntraineur . '" required="true"></td>
+						</tr>
+						<tr>
+							<td>Mot de passe entraineur :</td>
+							<td><input type="text" name="pwdEntraineur" id="pwdEntraineur" value="' . $pwdEntraineur . '" required="true"></td>
+						</tr>';
+
+			if ($vacataire)
+			{
+				echo '<tr>
+				<td>Téléphone :</td>
+				<td><input type="text" name="dateOuTel" id="dateOuTel" value="' . $dateOuTel . '" required="true"></td>
+			  </tr>';
+			}
+
+			if ($titulaire)
+			{
+				echo '<tr>
+				<td>Date d\'embauche :</td>
+				<td><input type="text" name="dateOuTel" id="dateOuTel" value="' . $dateOuTel . '" required="true"></td>
+			  </tr>';
+			}
+
+						echo '</table>
+		  			</div>
+				</div>
+			</div>';
+
+
 			echo '<div class="row pt-5 text-center">
-				<div class="col-9">
-					<legend>Choisir les spécialités que l\'entraineur pourras enseigner : </legend>
-					m\'intenir la touche Ctrl appuiyer pour sélectionner plusieur spécialités
-				</div>
-				<div class="col-3 text-left">
-					<legend>' . $listeSpecialite . '</legend>
-				</div>
+			<div class="col-9">
+				<legend>Choisir les spécialités que l\'entraineur pourras enseigner a partir de maintenant: </legend>
+				<p class="text-danger">M\'intenir la touche Ctrl appuiyer pour sélectionner plusieur spécialités</p>
 			</div>
+			<div class="col-3 text-left">
+				<legend>' . $listeSpecialite . '</legend>
+			</div>
+		</div>
 			<div class="text-center">			
 				<button type="submit" class="btn btn-primary">Valider</button>
 			</div>
-							
-			</form>';
+
+			<input type="hidden" name="idEntraineur" value="' . $idEntraineur . '">
+			<input type="hidden" name="vacataire" value="' . $vacataire . '">
+			<input type="hidden" name="titulaire" value="' . $titulaire . '">';
+
+			echo '</form>';
 		}
+
+
 	}
