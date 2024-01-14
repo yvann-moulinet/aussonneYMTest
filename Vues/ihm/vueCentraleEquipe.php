@@ -47,7 +47,7 @@ class vueCentraleEquipe
 
     public function saisirEquipe($listeSpecialite, $listeEntraineur)
     {
-        echo '<form action=index.php?vue=Entraineur&action=enregistrer method=POST>';
+        echo '<form action=index.php?vue=Equipe&action=enregistrer method=POST>';
         echo '<legend>Information de l\'équipe</legend>
                         
                         <table class="table table-bordered table-sm table-striped">
@@ -104,4 +104,22 @@ class vueCentraleEquipe
                         
                 </form>';
     }
+
+    public function messageRequeteCréation()
+		{
+			echo '<div class="text-center h2 pt-4">
+	
+			La création de l\'équipe est prit en compte.
+	
+			</div>';
+		}
+
+    public function messageRequeteModification()
+		{
+			echo '<div class="text-center h2 pt-4">
+	
+			Le changement sur l\'équipe est prit en compte.
+	
+			</div>';
+		}
 }

@@ -1,15 +1,18 @@
 <?php
 class metierEntraineur
 {
+	private conteneurEquipe $lesEquipes;
 	private conteneurSpecialite $lesSpecialites;
 	private int $idEntraineur;
 	private string $nomEntraineur;
 	private string $loginEntraineur;
 	private string $pwdEntraineur;
 
+
 	//CONSTRUCTEUR-----------------------------------------------------------------------------
-	public function __construct(conteneurSpecialite $lesSpecialites = new conteneurSpecialite(), int $idEntraineur = 0, string $nomEntraineur = '', string $loginEntraineur = '', string $pwdEntraineur = '')
+	public function __construct(conteneurEquipe $lesEquipes = new conteneurEquipe() ,conteneurSpecialite $lesSpecialites = new conteneurSpecialite(), int $idEntraineur = 0, string $nomEntraineur = '', string $loginEntraineur = '', string $pwdEntraineur = '')
 	{
+		$this->lesEquipes = $lesEquipes;
 		$this->lesSpecialites = $lesSpecialites;
 		$this->idEntraineur = $idEntraineur;
 		$this->nomEntraineur = $nomEntraineur;

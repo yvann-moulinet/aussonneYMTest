@@ -203,12 +203,5 @@ class vueCentraleConnexion
 				<div class="col-md-10 col-xs-12 "style=" height: calc(100vh - 22rem); overflow: auto;">';
 	}
 
-	public function messageRequete()
-	{
-		echo '<div class="text-center h2 pt-4">
 
-		Le changement sur l\'entraineur est prit en compte.
-
-		</div>';
-	}
 }

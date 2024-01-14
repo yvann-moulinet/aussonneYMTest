@@ -13,9 +13,9 @@ class conteneurVacataire
 	}
 
 	//les méthodes habituellement indispensables
-	public function ajouterUnVacataire(int $unIdEntraineur, string $unNomEntraineur, string $unLoginEntraineur, string $unPwdEntraineur, string $unTelephone, conteneurSpecialite $lesSpecialite)
+	public function ajouterUnVacataire(int $unIdEntraineur, string $unNomEntraineur, string $unLoginEntraineur, string $unPwdEntraineur, string $unTelephone, conteneurEquipe $lesEquipe, conteneurSpecialite $lesSpecialite)
 	{
-		$unVacataire = new metierVacataire($lesSpecialite, $unIdEntraineur, $unNomEntraineur, $unLoginEntraineur, $unPwdEntraineur, $unTelephone);
+		$unVacataire = new metierVacataire($lesEquipe, $lesSpecialite, $unIdEntraineur, $unNomEntraineur, $unLoginEntraineur, $unPwdEntraineur, $unTelephone);
 		$this->lesVacataires->append($unVacataire);
 	}
 

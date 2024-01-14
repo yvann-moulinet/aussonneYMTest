@@ -232,5 +232,21 @@
 			echo '</form>';
 		}
 
+		public function messageRequeteCreation()
+		{
+			echo '<div class="text-center h2 pt-4">
+	
+			La création de l\'entraineur est prit en compte.
+	
+			</div>';
+		}
 
+		public function messageRequeteModification()
+		{
+			echo '<div class="text-center h2 pt-4">
+	
+			Le changement sur l\'entraineur est prit en compte.
+	
+			</div>';
+		}
 	}

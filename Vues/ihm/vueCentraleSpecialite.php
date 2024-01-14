@@ -7,15 +7,44 @@
 			
 		}
 		
-		public function modifierSpecialite($message)
+		public function modifierSpecialite($listeSpecialite)
 		{
-			echo '<form action=index.php?vue=Specialite&action=choixFaitPourModif method = GET>';
-			echo $message; 
-			echo ' <input type=hidden name=vue value=Specialite></input>
-				   <input type=hidden name=action value=choixFaitPourModif></input>
-				   <button type="submit" class="btn btn-primary">Valider</button>
-				  </form>
-			';
+			{
+				echo '<form action=index.php?vue=Specialite&action=saisirModif method=POST>
+					<legend class="text-center">Choisir La spécialité à modifier : ' . $listeSpecialite . ' </legend>';
+				echo '<div class="text-center">
+				 <button type="submit" class="btn btn-primary text-center">Valider</button>
+				 </div>
+				 </form>';
+			}
+		}
+
+		public function saisirModifSpecialite($idSpecialite, $nomSpecialite)
+		{
+
+			echo '<form action=index.php?vue=Specialite&action=enregModif method=POST>';
+
+			echo '<div class="container pt-5">
+			<p class="h2 text-center pb-3">Modifier entraineur<p>
+			<div class="row justify-content-center">
+				<div class="col-6">
+					<table class="table text-center">
+						<tr>
+							<td>Nom entraineur :</td>
+							<td><input type="text" name="nomSpecialite" id="nomSpecialite" value="' . $nomSpecialite . '" required="true"></td>
+						</tr>
+						</table>
+		  			</div>
+				</div>
+			</div>
+
+			<div class="text-center">			
+				<button type="submit" class="btn btn-primary">Valider</button>
+			</div>
+
+			<input type="hidden" name="idSpecialite" value="' . $idSpecialite . '">';
+
+			echo '</form>';
 		}
 		public function visualiserSpecialite($message)
 		{
@@ -55,22 +84,15 @@
 			echo '</table>';
 			
 		}
+
+		public function messageRequeteModification()
+		{
+			echo '<div class="text-center h2 pt-4">
+	
+			Le changement sur la spécialité est prit en compte.
+	
+			</div>';
+		}
 		
-		
-	public function choixFaitPourModifSpecialite($nom, $nbrPlace, $ageMin, $ageMax, $sexe, $choix,$liste)
-	{
-		echo 'coucou';
-		echo '<form action=index.php?vue=Specialite&action=EnregModif method = GET>
-						<input type=text name=nomSpecialite value='.$nom.'></input>
-						<input type=integer name=nbrPlaceEquipe value='.$nbrPlace.'></input>
-						<input type=integer name=ageMinEquipe value='.$ageMin.'></input>
-						<input type=integer name=ageMaxEquipe value='.$ageMax.'></input>
-						<input type=text name=sexeEquipe value='.$sexe.'></input>	';
-						echo $liste;
-						echo '<input type=hidden name=idSpecialite value='.$choix.'></input>	
-						<input type=hidden name=vue value=Specialite></input>
-						<input type=hidden name=action value=EnregModif></input>
-						<button type="submit" class="btn btn-primary">Valider</button>
-			 </form>';
-	}
+
 }

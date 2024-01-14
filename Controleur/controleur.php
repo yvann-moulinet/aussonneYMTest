@@ -105,9 +105,44 @@ class controleur
 	{
 		$resultatEntraineur = $this->maBD->chargement('entraineur');
 		$resultatSpecialite = $this->maBD->chargement('specialite');
+		$resultatEquipe = $this->maBD->chargement('equipe');
 		$nbA = 0;
 		while ($nbA < sizeof($resultatEntraineur))
 		{
+			$nbE = 0;
+			while ($nbE < sizeof($resultatEquipe))
+			{
+				if ($resultatEntraineur[$nbA][0] == $resultatEquipe[$nbE][0])
+				{
+					$resultEquipe = $this->maBD->chercheEquipeEntraineur($resultatEntraineur[$nbE][0]);
+					$lesEquipeTemp = new conteneurEquipe();
+					$nb = 0;
+					while ($nb < sizeof($resultEquipe))
+					{
+						$lesEquipeTemp->ajouterUneEquipe(
+							$resultEquipe[$nb][0],
+							$resultEquipe[$nb][1],
+							$resultEquipe[$nb][2],
+							$resultEquipe[$nb][3],
+							$resultEquipe[$nb][4],
+							$resultEquipe[$nb][5],
+							new metierSpecialite($resultEquipe[$nb][8], $resultEquipe[$nb][9]),
+							new metierEntraineur(
+								new conteneurEquipe(),
+								new conteneurSpecialite(),
+								$resultEquipe[$nb][10],
+								$resultEquipe[$nb][11],
+								$resultEquipe[$nb][12],
+								$resultEquipe[$nb][13]
+							)
+
+						);
+						$nb++;
+					}
+				}
+				$nbE++;
+			}
+
 			$nbP = 0;
 			while ($nbP < sizeof($resultatSpecialite))
 			{
@@ -127,7 +162,7 @@ class controleur
 				}
 				$nbP++;
 			}
-			$this->tousLesEntraineurs->ajouterUnEntraineur($resultatEntraineur[$nbA][0], $resultatEntraineur[$nbA][1], $resultatEntraineur[$nbA][2], $resultatEntraineur[$nbA][3], $lesSpecialitesTemp);
+			$this->tousLesEntraineurs->ajouterUnEntraineur($resultatEntraineur[$nbA][0], $resultatEntraineur[$nbA][1], $resultatEntraineur[$nbA][2], $resultatEntraineur[$nbA][3], $lesSpecialitesTemp, $lesEquipeTemp);
 			$nbA++;
 		}
 	}
@@ -146,6 +181,32 @@ class controleur
 			{
 				if ($resultatEntraineur[$nbE][0] == $resultatVacataire[$nbV][0])
 				{
+					$resultEquipe = $this->maBD->chercheEquipeEntraineur($resultatEntraineur[$nbE][0]);
+					$lesEquipeTemp = new conteneurEquipe();
+					$nb = 0;
+					while ($nb < sizeof($resultEquipe))
+					{
+						$lesEquipeTemp->ajouterUneEquipe(
+							$resultEquipe[$nb][0],
+							$resultEquipe[$nb][1],
+							$resultEquipe[$nb][2],
+							$resultEquipe[$nb][3],
+							$resultEquipe[$nb][4],
+							$resultEquipe[$nb][5],
+							new metierSpecialite($resultEquipe[$nb][8], $resultEquipe[$nb][9]),
+							new metierEntraineur(
+								new conteneurEquipe(),
+								new conteneurSpecialite(),
+								$resultEquipe[$nb][10],
+								$resultEquipe[$nb][11],
+								$resultEquipe[$nb][12],
+								$resultEquipe[$nb][13]
+							)
+
+						);
+						$nb++;
+					}
+
 					$resultSpecialite = $this->maBD->chercheSpecialite($resultatVacataire[$nbV][0]);
 					$lesSpecialites = new conteneurSpecialite();
 					$nb = 0;
@@ -155,7 +216,7 @@ class controleur
 						$nb++;
 					}
 
-					$this->tousLesVacataires->ajouterUnVacataire($resultatEntraineur[$nbE][0], $resultatEntraineur[$nbE][1], $resultatEntraineur[$nbE][2], $resultatEntraineur[$nbE][3], $resultatVacataire[$nbV][1], $lesSpecialites);
+					$this->tousLesVacataires->ajouterUnVacataire($resultatEntraineur[$nbE][0], $resultatEntraineur[$nbE][1], $resultatEntraineur[$nbE][2], $resultatEntraineur[$nbE][3], $resultatVacataire[$nbV][1], $lesEquipeTemp, $lesSpecialites);
 				}
 				$nbV++;
 			}
@@ -176,6 +237,32 @@ class controleur
 			{
 				if ($resultatEntraineur[$nbE][0] == $resultatTitulaire[$nbT][0])
 				{
+					$resultEquipe = $this->maBD->chercheEquipeEntraineur($resultatEntraineur[$nbE][0]);
+					$lesEquipeTemp = new conteneurEquipe();
+					$nb = 0;
+					while ($nb < sizeof($resultEquipe))
+					{
+						$lesEquipeTemp->ajouterUneEquipe(
+							$resultEquipe[$nb][0],
+							$resultEquipe[$nb][1],
+							$resultEquipe[$nb][2],
+							$resultEquipe[$nb][3],
+							$resultEquipe[$nb][4],
+							$resultEquipe[$nb][5],
+							new metierSpecialite($resultEquipe[$nb][8], $resultEquipe[$nb][9]),
+							new metierEntraineur(
+								new conteneurEquipe(),
+								new conteneurSpecialite(),
+								$resultEquipe[$nb][10],
+								$resultEquipe[$nb][11],
+								$resultEquipe[$nb][12],
+								$resultEquipe[$nb][13]
+							)
+
+						);
+						$nb++;
+					}
+
 					$resultSpecialite = $this->maBD->chercheSpecialite($resultatTitulaire[$nbT][0]);
 					$lesSpecialites = new conteneurSpecialite();
 					$nb = 0;
@@ -184,7 +271,7 @@ class controleur
 						$lesSpecialites->ajouterUneSpecialite($resultSpecialite[$nb][0], $resultSpecialite[$nb][1]);
 						$nb++;
 					}
-					$this->tousLesTitulaires->ajouterUnTitulaire($resultatEntraineur[$nbE][0], $resultatEntraineur[$nbE][1], $resultatEntraineur[$nbE][2], $resultatEntraineur[$nbE][2], $resultatTitulaire[$nbT][1], $lesSpecialites);
+					$this->tousLesTitulaires->ajouterUnTitulaire($resultatEntraineur[$nbE][0], $resultatEntraineur[$nbE][1], $resultatEntraineur[$nbE][2], $resultatEntraineur[$nbE][2], $resultatTitulaire[$nbT][1], $lesEquipeTemp, $lesSpecialites);
 				}
 				$nbT++;
 			}
@@ -267,6 +354,7 @@ class controleur
 								$resultEquipe[$nb][9]
 							),
 							new metierEntraineur(
+								new conteneurEquipe(),
 								new conteneurSpecialite(),
 								$resultEquipe[$nb][10],
 								$resultEquipe[$nb][11],

@@ -260,6 +260,39 @@ class accesBD
 		}
 	}
 
+	public function insertEquipe($nomEquipe, $placeEquipe, $ageMin, $ageMax, $sexEquipe, $idSpecialites, $idEntraineur)
+	{
+		$sonId = $this->donneProchainIdentifiant("EQUIPE", "idEquipe") +1;
+		$moment = date("Y-m-d H:i:s");
+
+
+			$req = $this->conn->prepare("INSERT INTO equipe (idEquipe, nomEquipe, nbrPlaceEquipe, ageMinEquipe, ageMaxEquipe, sexeEquipe, idSpecialite, idEntraineur) VALUES (?,?,?,?,?,?,?,?)");
+			$req->bindValue(1, $sonId - 1);
+			$req->bindValue(2, $nomEquipe);
+			$req->bindValue(3, $placeEquipe);
+			$req->bindValue(4, $ageMin);
+			$req->bindValue(5, $ageMax);
+			$req->bindValue(6, $sexEquipe);
+			$req->bindValue(7, $idSpecialites);
+			$req->bindValue(8, $idEntraineur);
+			
+			if (!$req->execute())
+			{
+				die("<h1>ERREUR<br>Connexion à la base de données impossible.</h1>");
+			}
+
+		
+		//ajout de l'action dans logActionUtilisateur
+		$log = $this->conn->prepare("INSERT INTO logActionUtilisateur (action,temps,idUtilisateur) VALUES (?,?,?)");
+		$log->bindValue(1, 'insert equipe ' . ($sonId - 1));
+		$log->bindValue(2, $moment);
+		$log->bindValue(3, $_SESSION['login']);
+		if (!$log->execute())
+		{
+			die("<h1>ERREUR<br>Connexion à la base de données impossible.</h1>");
+		}
+	}
+
 	/***********************************************************************************************
 	toute les fonction d'update.
 	 ***********************************************************************************************/
@@ -341,18 +374,26 @@ class accesBD
 		return $idEntraineur;
 	}
 
-	public function modifSpecialite($idSpecialite, $unNomSpecialite)
+	public function modifSpecialite($idSpecialite, $NomSpecialite)
 	{
 		$requete = $this->conn->prepare("UPDATE specialite SET nomSpecialite = ? where idSpecialite = ?");
-
-		$requete->bindValue(1, $idSpecialite);
-		$requete->bindValue(2, $unNomSpecialite);
-
-		echo "La modification est effectuée.";
+		$requete->bindValue(1, $NomSpecialite);
+		$requete->bindValue(2, $idSpecialite);
 
 		if (!$requete->execute())
 		{
 			die("Erreur dans modif Specialite : " . $requete->errorCode());
+		}
+
+		$moment = date("Y-m-d H:i:s");
+
+		$log = $this->conn->prepare("INSERT INTO logActionUtilisateur (action,temps,idUtilisateur) VALUES (?,?,?)");
+		$log->bindValue(1, 'update spécialité ' . $idSpecialite);
+		$log->bindValue(2, $moment);
+		$log->bindValue(3, $_SESSION['login']);
+		if (!$log->execute())
+		{
+			die("<h1>ERREUR<br>Connexion à la base de données impossible.</h1>");
 		}
 		return $idSpecialite;
 	}
@@ -530,6 +571,32 @@ class accesBD
 		INNER JOIN specialite ON specialite.idSpecialite = equipe.idSpecialite 
 		INNER JOIN entraineur ON entraineur.idEntraineur = equipe.idEntraineur 
 		WHERE pouvoir.idAdherent = $idAdherent";
+		$requete = $this->conn->prepare($stringQuery);
+		$nbTuples = 0;
+		$lesInfos = array();
+		if ($requete->execute())
+		{
+			while ($row = $requete->fetch(PDO::FETCH_NUM))
+			{
+				$lesInfos[$nbTuples] = $row;
+				$nbTuples++;
+			}
+		}
+		else
+		{
+			die('Problème dans chargement : ' . $requete->errorCode());
+		}
+		return $lesInfos;
+	}
+
+	public function chercheEquipeEntraineur($idEntraineur)
+	{
+		$stringQuery = "SELECT equipe.*, specialite.*, entraineur.*
+		FROM entrainer
+		INNER JOIN equipe ON equipe.idEquipe = entrainer.idEquipe  
+		INNER JOIN specialite ON specialite.idSpecialite = equipe.idSpecialite
+		INNER JOIN entraineur ON entraineur.idEntraineur = equipe.idEntraineur 
+		WHERE entrainer.idEntraineur = $idEntraineur";
 		$requete = $this->conn->prepare($stringQuery);
 		$nbTuples = 0;
 		$lesInfos = array();

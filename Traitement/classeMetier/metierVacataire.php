@@ -6,9 +6,9 @@ class metierVacataire extends metierEntraineur
 
 
 	//CONSTRUCTEUR-----------------------------------------------------------------------------
-	public function __construct($lesSpecialites, $unIdEntraineur, $unNomEntraineur, $unLoginEntraineur, $unPwdEntraineur, private string $telephone)
+	public function __construct($lesEquipes, $lesSpecialites, $unIdEntraineur, $unNomEntraineur, $unLoginEntraineur, $unPwdEntraineur, private string $telephone)
 	{
-		parent::__construct(lesSpecialites: $lesSpecialites, idEntraineur: $unIdEntraineur, nomEntraineur: $unNomEntraineur, loginEntraineur: $unLoginEntraineur, pwdEntraineur: $unPwdEntraineur);
+		parent::__construct(lesEquipes: $lesEquipes, lesSpecialites: $lesSpecialites, idEntraineur: $unIdEntraineur, nomEntraineur: $unNomEntraineur, loginEntraineur: $unLoginEntraineur, pwdEntraineur: $unPwdEntraineur);
 		$this->telephone = $telephone;
 	}
 

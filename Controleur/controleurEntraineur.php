@@ -40,7 +40,8 @@ switch ($action)
 			$vue = new vueCentraleConnexion();
 			$liste = $this->maBD->afficheListeSelect();
 			$vue->afficheMenuAdmin($liste);
-			$vue->messageRequete();
+			$vue = new vueCentraleEntraineur();
+			$vue->messageRequeteCreation();
 		}
 		else
 		{
@@ -54,7 +55,8 @@ switch ($action)
 			$vue = new vueCentraleConnexion();
 			$liste = $this->maBD->afficheListeSelect();
 			$vue->afficheMenuAdmin($liste);
-			$vue->messageRequete();
+			$vue = new vueCentraleEntraineur();
+			$vue->messageRequeteCreation();
 		}
 		break;
 	/*
@@ -117,7 +119,8 @@ switch ($action)
 		$vue = new vueCentraleConnexion();
 		$liste = $this->maBD->afficheListeSelect();
 		$vue->afficheMenuAdmin($liste);
-		$vue->messageRequete();
+		$vue = new vueCentraleEntraineur();
+		$vue->messageRequeteModification();
 		break;
 
 	/*
