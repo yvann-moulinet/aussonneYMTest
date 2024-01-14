@@ -12,9 +12,9 @@ class conteneurTitulaire
 	}
 
 	//les méthodes habituellement indispensables
-	public function ajouterUnTitulaire(int $unIdEntraineur, string $unNomEntraineur, string $unLoginEntraineur, string $unPwdEntraineur, string $uneDateEmbauche, conteneurEquipe $lesEquipe, conteneurSpecialite $lesSpecialite)
+	public function ajouterUnTitulaire(int $unIdEntraineur, string $unNomEntraineur, string $unLoginEntraineur, string $unPwdEntraineur, string $uneDateEmbauche, conteneurSpecialite $lesSpecialite)
 	{
-		$unTitulaire = new metierTitulaire($lesEquipe, $lesSpecialite, $unIdEntraineur, $unNomEntraineur, $unLoginEntraineur, $unPwdEntraineur, $uneDateEmbauche);
+		$unTitulaire = new metierTitulaire($lesSpecialite, $unIdEntraineur, $unNomEntraineur, $unLoginEntraineur, $unPwdEntraineur, $uneDateEmbauche);
 		$this->lesTitulaires->append($unTitulaire);
 	}
 
