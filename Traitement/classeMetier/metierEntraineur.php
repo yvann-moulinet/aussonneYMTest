@@ -1,26 +1,18 @@
 <?php
 class metierEntraineur
 {
-	private conteneurSpecialite $lesSpecialites;
-	private int $idEntraineur;
-	private string $nomEntraineur;
-	private string $loginEntraineur;
-	private string $pwdEntraineur;
+
 
 	//CONSTRUCTEUR-----------------------------------------------------------------------------
-	public function __construct(conteneurSpecialite $lesSpecialites = new conteneurSpecialite(), int $idEntraineur = 0, string $nomEntraineur = '', string $loginEntraineur = '', string $pwdEntraineur = '')
+	public function __construct(private conteneurSpecialite $lesSpecialites = new conteneurSpecialite(),private int $idEntraineur = 0,private string $nomEntraineur = '',private string $loginEntraineur = '',private string $pwdEntraineur = '')
 	{
-		$this->lesSpecialites = $lesSpecialites;
-		$this->idEntraineur = $idEntraineur;
-		$this->nomEntraineur = $nomEntraineur;
-		$this->loginEntraineur = $loginEntraineur;
-		$this->pwdEntraineur = $pwdEntraineur;
 	}
 
 	public function ajoutEntraineur($lEntraineur)
 	{
 		$this->idEntraineur = $lEntraineur->idEntraineur;
 		$this->nomEntraineur = $lEntraineur->nomEntraineur;
+		
 	}
 	//ACCESSEURS-------------------------------------------------------------------------------
 	public function __get($attribut)

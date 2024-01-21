@@ -49,7 +49,7 @@ switch ($action)
 			$loginEntraineur = $_POST['loginEntraineur'];
 			$pwdEntraineur = $_POST['pwdEntraineur'];
 			$dateEmbEntraineur = $_POST['dateEmbaucheTitulaire'];
-			$idSpecialite = $_POST['idSpecialite'];
+			$listeSpecialites = $_POST['idSpecialite'];
 			$this->tousLesTitulaires->ajouterUnTitulaire($this->maBD->donneProchainIdentifiant("ENTRAINEUR") + 1, $nomEntraineur,  $loginEntraineur, $pwdEntraineur, $dateEmbEntraineur, new conteneurSpecialite($listeSpecialites));
 			$this->maBD->insertTitulaire($nomEntraineur, $loginEntraineur, $pwdEntraineur, $dateEmbEntraineur);
 			$vue = new vueCentraleConnexion();
@@ -109,7 +109,9 @@ switch ($action)
 		$nomEntraineur = $_POST['nomEntraineur'];
 		$loginEntraineur = $_POST['loginEntraineur'];
 		$pwdEntraineur = $_POST['pwdEntraineur'];
-
+		/*$dateOuTel = $_POST['dateOuTel'];
+		$vacataire = $_POST['vacataire'];
+		$titulaire = $_POST['titulaire'];*/
 		//initialiser les variable qui peuvent ne rien contenir comme un if-else
 		$dateOuTel = isset($_POST['dateOuTel']) ? $_POST['dateOuTel'] : null;
 		$vacataire = isset($_POST['vacataire']) ? $_POST['vacataire'] : null;

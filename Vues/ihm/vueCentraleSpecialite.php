@@ -46,6 +46,30 @@
 
 			echo '</form>';
 		}
+
+		function saisirSpecialite()
+		{
+			echo '<form action=index.php?vue=Specialite&action=enregistrer method=POST>
+			<legend>Information de la spécialité</legend>
+							
+			<table class="table table-bordered text-center table-sm table-striped">
+				<thead>
+					<tr>
+					  <th scope="col">Nom spécialité</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+					  <td scope>
+						<input type="text" name="nomSpecialite" id="NumTel" required="true">
+					  </td>
+				</tbody>
+			</table>
+			<div class="text-center pt-3">
+				<button type="submit" class="btn btn-primary">Valider</button>
+			</div>
+			</form>';
+		}
 		public function visualiserSpecialite($message)
 		{
 						
@@ -90,6 +114,15 @@
 			echo '<div class="text-center h2 pt-4">
 	
 			Le changement sur la spécialité est prit en compte.
+	
+			</div>';
+		}
+
+		public function messageRequeteInsert()
+		{
+			echo '<div class="text-center h2 pt-4">
+	
+				Le l\'ajout sur la spécialité est prit en compte.
 	
 			</div>';
 		}

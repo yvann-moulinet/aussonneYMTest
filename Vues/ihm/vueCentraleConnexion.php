@@ -203,5 +203,26 @@ class vueCentraleConnexion
 				<div class="col-md-10 col-xs-12 "style=" height: calc(100vh - 22rem); overflow: auto;">';
 	}
 
+	function mauvaisIdentifiant()
+	{
 
+		echo '<div class="text-center h2 pt-4">
+			Login ou mot de passe mauvais.
+		</div>';
+	}
+	function ManqueChamp()
+	{
+
+		echo '<div class="text-center h2 pt-4">
+			Certain champ ne sont pas renseigné.
+		</div>';
+	}
+
+	function champRole()
+	{
+
+		echo '<div class="text-center h2 pt-4">
+			Le champ role n\'est pas défini.
+		</div>';
+	}
 }

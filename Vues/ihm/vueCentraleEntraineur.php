@@ -85,7 +85,7 @@
 								<tbody>
 									<tr>
 									  <td scope>
-										<input type="text" name="numTelVacataire" id="NumTel" required="true">
+										<input type="text" name="numTelVacataire" id="NumTel" required="true" pattern="\d{10}" title="Veuillez entrer exactement 10 chiffres.">
 									  </td>
 									  <td>
 										<input type=text name=nomEntraineur id=nomEntraineur required=true>
@@ -129,7 +129,7 @@
 								<tbody>
 									<tr>
 									  <td scope>
-									    <input type=date name="dateEmbaucheTitulaire" placeholder="YYYY-MM-DD" required pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" id="dateEmbaucheTitulaire" required="true">
+									    <input type=date name="dateEmbaucheTitulaire" id="dateEmbaucheTitulaire" required="true">
 									  </td>
 									  <td>
 										<input type=text name=nomEntraineur id=nomEntraineur required=true>
@@ -194,7 +194,7 @@
 			{
 				echo '<tr>
 				<td>Téléphone :</td>
-				<td><input type="text" name="dateOuTel" id="dateOuTel" value="' . $dateOuTel . '" required="true"></td>
+				<td><input type="text" name="dateOuTel" id="dateOuTel" value="' . $dateOuTel . '" required="true" pattern="\d{10}" title="Veuillez entrer exactement 10 chiffres."></td>
 			  </tr>';
 			}
 
@@ -202,7 +202,7 @@
 			{
 				echo '<tr>
 				<td>Date d\'embauche :</td>
-				<td><input type="text" name="dateOuTel" id="dateOuTel" value="' . $dateOuTel . '" required="true"></td>
+				<td><input type="date" name="dateOuTel" id="dateOuTel" value="' . $dateOuTel . '" required="true"></td>
 			  </tr>';
 			}
 

@@ -68,6 +68,16 @@ class conteneurEquipe
 		$liste = $liste . "</SELECT>";
 		return $liste;
 	}
+	public function lesEquipesAuFormatHTMLMultiple()
+	{
+		$liste = "<SELECT name = 'idEquipe[]' multiple required>";
+		foreach ($this->lesEquipes as $uneEquipe)
+		{
+			$liste = $liste . "<OPTION value='" . $uneEquipe->idEquipe . "'>" . $uneEquipe->nomEquipe . "</OPTION>";
+		}
+		$liste = $liste . "</SELECT>";
+		return $liste;
+	}
 
 	public function leNomDesEquipes()
 	{

@@ -33,6 +33,7 @@ class accesBD
 	// ON vérifie l'existance d'un utilisateur grace à son login et son password
 	public function verifExistance($role, $login, $pwd)
 	{
+		$bool = false;
 		try
 		{
 			// on utilise la fonction htmlspecialchars pour echapper les caractères spéciaux
@@ -65,12 +66,12 @@ class accesBD
 				//on va créer une ligne de log dans notre table logActionUtilisateur
 				$requete = 'INSERT INTO logActionUtilisateur (action ,temps, idUtilisateur) VALUES (\'connexion\',\'' . date('d-m-y h:i:s') . '\',\'' . $login . '\');';
 				$result = $this->conn->query($requete);
-
-				return (1);
+				$bool = true;
+				return ($bool);
 			}
 			else
 			{
-				return (0);
+				return ($bool);
 			}
 		}
 		catch (PDOException $e)
@@ -123,7 +124,11 @@ class accesBD
 	}
 	public function afficheListeDesNouvelleAjax()
 	{
-		$requete = 'SELECT * FROM nouvelle WHERE codeTheme = ' . $_POST['ref'] . ';';
+		// Assurez-vous que $_POST['ref'] est une valeur numérique valide
+		$ref = intval($_POST['ref']);
+
+		// Utilisez une requête préparée pour éviter l'injection SQL
+		$requete = 'SELECT * FROM nouvelle WHERE codeTheme = :ref;';
 		$liste = '<table class="table table-striped table-bordered table-sm w-100">
 					<thead>
 						<tr>
@@ -133,8 +138,12 @@ class accesBD
 						</tr>
 					</thead>
 					<tbody>';
-		$result = $this->conn->query($requete);
-		while ($row = $result->fetch(PDO::FETCH_OBJ))
+
+		$stmt = $this->conn->prepare($requete);
+		$stmt->bindParam(':ref', $ref, PDO::PARAM_INT);
+		$stmt->execute();
+
+		while ($row = $stmt->fetch(PDO::FETCH_OBJ))
 		{
 			$liste .= '<tr>
 						<td>' . $row->code . '</td>
@@ -142,6 +151,7 @@ class accesBD
 						<td>' . $row->description . '</td>
 					</tr>';
 		}
+
 		$liste .= '</tbody></table>';
 		return $liste;
 	}
@@ -198,12 +208,12 @@ class accesBD
 		return $sonId;
 	}
 
-	public function insertSpecialite($unNomSpecialite)
+	public function insertSpecialite($nomSpecialite)
 	{
 		$sonId = $this->donneProchainIdentifiant("SPECIALITE", "idSpecialite");
 		$requete = $this->conn->prepare("INSERT INTO SPECIALITE (idSpecialite,nomSpecialite) VALUES (?,?)");
 		$requete->bindValue(1, $sonId);
-		$requete->bindValue(2, $unNomSpecialite);
+		$requete->bindValue(2, $nomSpecialite);
 		if (!$requete->execute())
 		{
 			die("Erreur dans insert Specialite : " . $requete->errorCode());
@@ -213,10 +223,12 @@ class accesBD
 
 
 
-	public function insertAdherent($unNomAdherent, $unPrenomAdherent, $unAgeAdherent, $unSexeAdherent, $unLoginAdherent, $unPwdAdherent, $unIdSpecialite)
+	public function insertAdherent($unNomAdherent, $unPrenomAdherent, $unAgeAdherent, $unSexeAdherent, $unLoginAdherent, $unPwdAdherent)
 	{
-		$sonId = $this->donneProchainIdentifiant("ADHERENT", "idAdherent") + 1;
-		$requete = $this->conn->prepare("INSERT INTO ADHERENT (idAdherent,nomAdherent, prenomAdherent, ageAdherent, sexeAdherent,loginAdherent, pwdAdherent,idSpecialite) VALUES (?,?,?,?,?,?,?,?)");
+		$moment = date("Y-m-d H:i:s");
+
+		$sonId = $this->donneProchainIdentifiant("ADHERENT", "idAdherent");
+		$requete = $this->conn->prepare("INSERT INTO ADHERENT (idAdherent,nomAdherent, prenomAdherent, ageAdherent, sexeAdherent,loginAdherent, pwdAdherent) VALUES (?,?,?,?,?,?,?)");
 		$requete->bindValue(1, $sonId);
 		$requete->bindValue(2, $unNomAdherent);
 		$requete->bindValue(3, $unPrenomAdherent);
@@ -224,12 +236,69 @@ class accesBD
 		$requete->bindValue(5, $unSexeAdherent);
 		$requete->bindValue(6, $unLoginAdherent);
 		$requete->bindValue(7, $unPwdAdherent);
-		$requete->bindValue(8, $unIdSpecialite);
 		if (!$requete->execute())
 		{
 			die("Erreur dans insert Adherent : " . $requete->errorCode());
 		}
+		//ajout de l'action dans logActionUtilisateur
+		$log = $this->conn->prepare("INSERT INTO logActionUtilisateur (action,temps,idUtilisateur) VALUES (?,?,?)");
+		$log->bindValue(1, 'insert equipe ' .$sonId);
+		$log->bindValue(2, $moment);
+		$log->bindValue(3, $_SESSION['login']);
+		if (!$log->execute())
+		{
+			die("<h1>ERREUR<br>Connexion à la base de données impossible.</h1>");
+		}
 		return $sonId;
+	}
+
+	public function insertPouvoir($listeEquipe)
+	{
+		$trigger = false;
+		$sonId = $this->donneProchainIdentifiant("ADHERENT", "idAdherent");
+		$moment = date("Y-m-d H:i:s");
+		$lesEquipes = '';
+
+		try
+		{
+			foreach ($listeEquipe as $idEquipe)
+			{
+				$requete = $this->conn->prepare("INSERT INTO POUVOIR (idAdherent, idEquipe) VALUES (?,?)");
+				$requete->bindValue(1, $sonId - 1);
+				$requete->bindValue(2, $idEquipe);
+				if (!$requete->execute())
+				{
+					die("<h1>ERREUR<br>Connexion à la base de données impossible.</h1>");
+				}
+				$lesEquipes .= $idEquipe . ', ';
+			}
+		}
+		catch (PDOException $e)
+		{
+			// Vérifiez si l'erreur est liée au déclencheur et affichez un message personnalisé
+			//cherche si la variable contient 10008
+			if (strpos($e->getMessage(), '10008') !== false || strpos($e->getMessage(), '10009') !== false || strpos($e->getMessage(), '10010') !== false)
+			{
+				$trigger = true;
+			}
+			else
+			{
+				echo "Une erreur s'est produite lors de l'insertion de l'adherent.";
+				echo $e->getMessage();
+			}
+		}
+
+		//ajout de l'action dans logActionUtilisateur
+		$log = $this->conn->prepare("INSERT INTO logActionUtilisateur (action,temps,idUtilisateur) VALUES (?,?,?)");
+		$log->bindValue(1, 'insert equipe ' . ($sonId - 1) . ' : equipe ' . $lesEquipes);
+		$log->bindValue(2, $moment);
+		$log->bindValue(3, $_SESSION['login']);
+		if (!$log->execute())
+		{
+			die("<h1>ERREUR<br>Connexion à la base de données impossible.</h1>");
+		}
+
+		return $trigger;
 	}
 
 	public function insertCompetent($listeSpecialites)
@@ -260,11 +329,16 @@ class accesBD
 		}
 	}
 
+
 	public function insertEquipe($nomEquipe, $placeEquipe, $ageMin, $ageMax, $sexEquipe, $idSpecialites, $idEntraineur)
 	{
-		$sonId = $this->donneProchainIdentifiant("EQUIPE", "idEquipe") +1;
+		$triggers = ['trigger' => false, 'triggerCompEntraineur' => false];
+		$sonId = $this->donneProchainIdentifiant("EQUIPE", "idEquipe") + 1;
 		$moment = date("Y-m-d H:i:s");
 
+
+		try
+		{
 
 			$req = $this->conn->prepare("INSERT INTO equipe (idEquipe, nomEquipe, nbrPlaceEquipe, ageMinEquipe, ageMaxEquipe, sexeEquipe, idSpecialite, idEntraineur) VALUES (?,?,?,?,?,?,?,?)");
 			$req->bindValue(1, $sonId - 1);
@@ -275,13 +349,29 @@ class accesBD
 			$req->bindValue(6, $sexEquipe);
 			$req->bindValue(7, $idSpecialites);
 			$req->bindValue(8, $idEntraineur);
-			
-			if (!$req->execute())
-			{
-				die("<h1>ERREUR<br>Connexion à la base de données impossible.</h1>");
-			}
 
-		
+			$req->execute();
+		}
+		catch (PDOException $e)
+		{
+			// Vérifiez si l'erreur est liée au déclencheur et affichez un message personnalisé
+			//cherche si la variable contient 10012
+			if (strpos($e->getMessage(), '10012') !== false)
+			{
+				$triggers['trigger'] = true;
+			}
+			elseif (strpos($e->getMessage(), '10016') !== false)
+			{
+				$triggers['triggerCompEntraineur'] = true;
+			}
+			else
+			{
+				echo "Une erreur s'est produite lors de l'insertion de l'équipe.";
+				echo $e->getMessage();
+			}
+		}
+
+
 		//ajout de l'action dans logActionUtilisateur
 		$log = $this->conn->prepare("INSERT INTO logActionUtilisateur (action,temps,idUtilisateur) VALUES (?,?,?)");
 		$log->bindValue(1, 'insert equipe ' . ($sonId - 1));
@@ -291,6 +381,8 @@ class accesBD
 		{
 			die("<h1>ERREUR<br>Connexion à la base de données impossible.</h1>");
 		}
+
+		return $triggers;
 	}
 
 	/***********************************************************************************************
@@ -316,11 +408,11 @@ class accesBD
 		}
 		if ($vacataire)
 		{
-			$requeteVacataire = $this->conn->prepare("UPDATE entraineur SET nomEntraineur = ?, loginEntraineur = ?, pwdEntraineur = ?, WHERE idEntraineur = ?");
-			$requeteVacataire->bindValue(1, $idEntraineur);
-			$requeteVacataire->bindValue(2, $nomEntraineur);
-			$requeteVacataire->bindValue(3, $loginEntraineur);
-			$requeteVacataire->bindValue(4, $pwdEntraineur);
+			$requeteVacataire = $this->conn->prepare("UPDATE entraineur SET nomEntraineur = ?, loginEntraineur = ?, pwdEntraineur = ? WHERE idEntraineur = ?");
+			$requeteVacataire->bindValue(1, $nomEntraineur);
+			$requeteVacataire->bindValue(2, $loginEntraineur);
+			$requeteVacataire->bindValue(3, $pwdEntraineur);
+			$requeteVacataire->bindValue(4, $idEntraineur);
 			if (!$requeteVacataire->execute())
 			{
 				die("Erreur dans modif Specialite : " . $requeteVacataire->errorCode());
@@ -396,6 +488,59 @@ class accesBD
 			die("<h1>ERREUR<br>Connexion à la base de données impossible.</h1>");
 		}
 		return $idSpecialite;
+	}
+
+	public function modifEquipe($idEquipe, $nomEquipe, $placeEquipe, $ageMin, $ageMax, $sexEquipe, $idSpecialites, $idEntraineur)
+	{
+		$triggers = ['trigger' => false, 'triggerCompEntraineur' => false];
+		$moment = date("Y-m-d H:i:s");
+
+		try
+		{
+
+			$req = $this->conn->prepare("UPDATE equipe SET nomEquipe = ?, nbrPlaceEquipe = ?, ageMinEquipe = ?, ageMaxEquipe = ?, sexeEquipe = ?, idSpecialite = ?, idEntraineur = ? WHERE idEquipe = ?");
+			$req->bindValue(1, $nomEquipe);
+			$req->bindValue(2, $placeEquipe);
+			$req->bindValue(3, $ageMin);
+			$req->bindValue(4, $ageMax);
+			$req->bindValue(5, $sexEquipe);
+			$req->bindValue(6, $idSpecialites);
+			$req->bindValue(7, $idEntraineur);
+			$req->bindValue(8, $idEquipe);
+
+			$req->execute();
+		}
+		catch (PDOException $e)
+		{
+			// Vérifiez si l'erreur est liée au déclencheur et affichez un message personnalisé
+			//cherche si la variable contient 10012
+			if (strpos($e->getMessage(), '10012') !== false)
+			{
+				$triggers['trigger'] = true;
+			}
+			elseif (strpos($e->getMessage(), '10016') !== false)
+			{
+				$triggers['triggerCompEntraineur'] = true;
+			}
+			else
+			{
+				echo "Une erreur s'est produite lors de l'insertion de l'équipe.";
+				echo $e->getMessage();
+			}
+		}
+
+
+		//ajout de l'action dans logActionUtilisateur
+		$log = $this->conn->prepare("INSERT INTO logActionUtilisateur (action,temps,idUtilisateur) VALUES (?,?,?)");
+		$log->bindValue(1, 'modification equipe ' . ($idEquipe));
+		$log->bindValue(2, $moment);
+		$log->bindValue(3, $_SESSION['login']);
+		if (!$log->execute())
+		{
+			die("<h1>ERREUR<br>Connexion à la base de données impossible.</h1>");
+		}
+
+		return $triggers;
 	}
 
 	/***********************************************************************************************

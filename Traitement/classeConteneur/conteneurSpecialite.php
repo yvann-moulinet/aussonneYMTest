@@ -69,7 +69,7 @@ class conteneurSpecialite
 
 	public function lesSpecialitesMultipleAuFormatHTML()
 	{
-		$liste = "<select name=\"idSpecialite[]\" multiple>";
+		$liste = "<select name='idSpecialite[]' multiple required>";
 
 		foreach ($this->lesSpecialites as $uneSpecialite) {
 			$liste .= "<option value='" . $uneSpecialite->idSpecialite . "'>" . " " .$uneSpecialite->nomSpecialite . "</option>";

@@ -98,4 +98,13 @@ class metierEquipe
     {
         return $this->nomEquipe . '|' . $this->ageMinEquipe . '|' . $this->ageMaxEquipe . '|' . $this->sexeEquipe . '|' . $this->nbrPlaceEquipe . '|' . $this->nomSpecialite . '|' . $this->nomEntraineur . '\n';
     }
+
+    public function getLaSpecialite()
+    {
+        return $this->laSpecialite;
+    }
+    public function getIdEntraineur()
+    {
+        return $this->lEntraineur->idEntraineur;
+    }
 }

@@ -47,7 +47,7 @@ class conteneurEntraineur
 		
 	public function lesEntraineursAuFormatHTML()
 		{
-		$liste = "<SELECT name = 'idEntraineur'>";
+		$liste = "<SELECT name = 'idEntraineur' required>";
 		foreach ($this->lesEntraineurs as $unEntraineur)
 			{
 			$liste = $liste."<OPTION value='".$unEntraineur->idEntraineur."'>".$unEntraineur->nomEntraineur."</OPTION>";

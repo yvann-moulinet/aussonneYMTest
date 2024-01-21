@@ -130,4 +130,156 @@ class vueCentraleAdherent
 		echo '</table>';
 		echo '</div>';
 	}
+
+	public function saisirAdherents($listeEquipe)
+	{
+
+		echo '<form action=index.php?vue=Adherent&action=enregistrer method=POST>';
+		echo '<legend>Information de l\'adherent</legend>
+							
+			<table class="table table-bordered table-sm table-striped">
+				<thead>
+					<tr>
+						<th scope="col">nom adherent</th>
+						<th scope="col">prénom adherent</th>
+						<th scope="col">Age</th>
+						<th scope="col">Sexe</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td scope>
+							<input type="text" name="nom" id="nom" required=true>
+						</td>
+						<td>
+							<input type=text name=prenom id=prenom required=true>
+						</td>
+						<td>
+							<input type=text name=age id=age required=true>
+						</td>
+						<td>
+							<select id="sexe" name="sexe">
+							<option value="Féminin">Féminin</option>
+							<option value="Masculin">Masculin</option>
+							</select>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<table class="table table-bordered table-sm table-striped">
+			<thead>
+				<tr>
+					<th scope="col">Login</th>
+					<th scope="col">Mot de passe</th>
+					<th scope="col">Equipes</th>
+
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+					<input type="text" name="login" id="login" required=true>
+					</td>
+					<td>
+					<input type="text" name="pwd" id="pwd" required=true>
+					</td>
+					<td>';
+		echo $listeEquipe . '
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<p class="text-danger font-weight-bold">M\'intenir la touche Ctrl appuiyer pour sélectionner plusieurs equipes</p>
+		<div class="text-center">
+		<button type="submit" class="btn btn-primary">Valider</button>
+		</div>
+			
+	</form>';
+	}
+
+	public function modifierAdherent($listeAdherent)
+	{
+		{
+			echo '<form action=index.php?vue=Adherent&action=saisirModif method=POST>
+				  <legend class="text-center">Choisir L \'adherent à modifier : ' . $listeAdherent . ' </legend>';
+			echo '<div class="text-center">
+			   <button type="submit" class="btn btn-primary text-center">Valider</button>
+			   </div>
+			   </form>';
+		}
+	}
+
+	public function saisirModifAdherent($idAdherent, $nomAdherent, $prenomAdherent, $age, $login, $pwd, $listeEquipe)
+	{
+
+		echo '<form action=index.php?vue=Equipe&action=enregistrerModification method=POST>';
+
+		echo '<div class="container pt-5">
+	  	<p class="h2 text-center pb-3">Modifier adherent<p>
+			<div class="row justify-content-center">
+				<div class="col-6">
+					<table class="table text-center">
+					<tr>
+						<td>Nom adherent :</td>
+						<td><input type="text" name="nomAdherent" id="nomAdherent" value="' . $nomAdherent . '" required="true"></td>
+					</tr>
+					<tr>
+						<td>prenom adherent:</td>
+						<td><input type="text" name="prenomAdherent" id="prenomAdherent" value="' . $prenomAdherent . '" required="true"></td>
+					</tr>
+					<tr>
+						<td>Age :</td>
+						<td><input type="text" name="age" id="age" value="' . $age . '" required="true"></td>
+					</tr>
+					<tr>
+						<td>Sexe :</td>
+						<td>              
+						<select id="sexEquipe" name="sexEquipe" required>
+							<option value="Féminin">Féminin</option>
+							<option value="Masculin">Masculin</option>
+						</select>
+						</td>
+					</tr>
+					<tr>
+						<td>Login :</td>
+						<td><input type="text" name="login" id="login" value="' . $login . '" required="true"></td>
+					</tr>
+					<tr>
+						<td>Mot de passe :</td>
+						<td><input type="text" name="pwd" id="pwd" value="' . $pwd . '" required="true"></td>
+					</tr>
+					<tr>
+						<td>Equipe :</td>
+						<td> ' . $listeEquipe . '</td>
+					</tr>
+					</table>
+				</div>
+			</div>
+	  </div>
+	  <div class="text-center">			
+		<button type="submit" class="btn btn-primary">Valider</button>
+	  </div>
+  
+	  <input type="hidden" name="idAdherent" value="' . $idAdherent . '">
+  
+	  </form>';
+	}
+
+	public function messageRequeteInsert()
+	{
+		echo '<div class="text-center h2 pt-4">
+	  
+			Le l\ajout de l\'adherent est prit en compte.
+	  
+		</div>';
+	}
+
+	public function messageRequeteTrigger()
+	{
+		echo '<div class="text-center h2 pt-4">
+	  
+			l\'dherent ne corespond pas aux critéres de l\'équipe.
+	  
+		</div>';
+	}
 }

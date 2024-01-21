@@ -63,7 +63,7 @@ class conteneurAdherent
 		$liste = "<SELECT name = 'idAdherent'>";
 		foreach ($this->lesAdherents as $unAdherent)
 		{
-			$liste = $liste . "<OPTION value='" . $unAdherent->idAdherent() . "'>" . $unAdherent->nomAdherent() . "</OPTION>";
+			$liste = $liste . "<OPTION value='" . $unAdherent->idAdherent . "'>" . $unAdherent->nomAdherent . "</OPTION>";
 		}
 		$liste = $liste . "</SELECT>";
 		return $liste;
@@ -76,7 +76,7 @@ class conteneurAdherent
 		$iAdherent = $this->lesAdherents->getIterator();
 		while ((!$trouve) && ($iAdherent->valid()))
 		{
-			if ($iAdherent->current()->idAdherent() == $unIdAdherent)
+			if ($iAdherent->current()->idAdherent == $unIdAdherent)
 			{
 				$trouve = true;
 				$leBonAdherent = $iAdherent->current();
