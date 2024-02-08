@@ -141,12 +141,31 @@ switch ($action)
 		break;
 	case "visualiserSesEquipes":
 		$vue = new vueCentraleConnexion();
+		$liste = $this->maBD->afficheListeSelect();
 		$vue->afficheMenuEntraineur($liste);
 		//reste à faire
 		break;
+	case "informationProfil":
+		$vue = new vueCentraleConnexion();
+		$liste = $this->maBD->afficheListeSelect();
+		$vue->afficheMenuEntraineur($liste);
+		$id = $this->tousLesEntraineurs->infoEntraineur();
+		$vue = new vueCentraleEntraineur();
+		$vue->informationEntraineur($id);
+		break;
+		break;
 	case "modifierSonProfil":
 		$vue = new vueCentraleConnexion();
+		$liste = $this->maBD->afficheListeSelect();
 		$vue->afficheMenuEntraineur($liste);
-		//reste à faire
+		$vue = new vueCentraleEntraineur();
+		$vue->modifierSonProfilEntraineur();
+		$result = $this->verifierMotDePasse();
+		if ($result == 1)
+		{
+			echo '<p>Le mot de passe est valide</p>';
+			$_SESSION['pwd'] = $_POST['npass'];
+			$this->maBD->modifyPassword($_SESSION['role'], $_SESSION['login'], $_SESSION['pwd']);
+		}
 		break;
 }

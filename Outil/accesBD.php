@@ -45,34 +45,37 @@ class accesBD
 			{	// On utilise la methode prepare pour se préminir des injections.    
 
 				case "1":
-					$requete = $this->conn->prepare("SELECT idAdmin FROM administrateur where loginAdmin = ? and pwdAdmin = ? ;");
+					$requete = $this->conn->prepare("SELECT idAdmin FROM administrateur where loginAdmin = ? and pwdAdmin = ?;");
 
 					break;
 				case "2":
-					$requete = $this->conn->prepare("SELECT idAdherent FROM adherent where loginAdherent = ? and pwdAdherent = ? ;");
+					$requete = $this->conn->prepare("SELECT idAdherent FROM adherent where loginAdherent = ? and pwdAdherent = ?;");
 					break;
 				case "3":
-					$requete = $this->conn->prepare("SELECT idEntraineur FROM entraineur where loginEntraineur = ? and pwdEntraineur = ? ;");
+					$requete = $this->conn->prepare("SELECT idEntraineur FROM entraineur where loginEntraineur = ? and pwdEntraineur = ?;");
 
 					break;
 			}
 
 			$requete->bindValue(1, $login);
 			$requete->bindValue(2, $pwd);
-			$result = $requete->fetch(PDO::FETCH_NUM);
 
-			if (isset($result))
+			// Utilisez execute pour exécuter la requête
+			$result = $requete->execute();
+
+			if ($result)
 			{
-				//on va créer une ligne de log dans notre table logActionUtilisateur
-				$requete = 'INSERT INTO logActionUtilisateur (action ,temps, idUtilisateur) VALUES (\'connexion\',\'' . date('d-m-y h:i:s') . '\',\'' . $login . '\');';
-				$result = $this->conn->query($requete);
-				$bool = true;
-				return ($bool);
+				// Utilisez rowCount pour vérifier s'il y a des résultats
+				if ($requete->rowCount() > 0)
+				{
+					//on va créer une ligne de log dans notre table logActionUtilisateur
+					$requete = 'INSERT INTO logActionUtilisateur (action, temps, idUtilisateur) VALUES (\'connexion\', \'' . date('d-m-y h:i:s') . '\', \'' . $login . '\');';
+					$result = $this->conn->query($requete);
+					$bool = true;
+				}
 			}
-			else
-			{
-				return ($bool);
-			}
+
+			return $bool;
 		}
 		catch (PDOException $e)
 		{
@@ -223,49 +226,37 @@ class accesBD
 
 
 
-	public function insertAdherent($unNomAdherent, $unPrenomAdherent, $unAgeAdherent, $unSexeAdherent, $unLoginAdherent, $unPwdAdherent)
+	public function insertAdherent($unNomAdherent, $unPrenomAdherent, $unAgeAdherent, $unSexeAdherent, $unLoginAdherent, $unPwdAdherent, $listeEquipe)
 	{
 		$moment = date("Y-m-d H:i:s");
-
-		$sonId = $this->donneProchainIdentifiant("ADHERENT", "idAdherent");
-		$requete = $this->conn->prepare("INSERT INTO ADHERENT (idAdherent,nomAdherent, prenomAdherent, ageAdherent, sexeAdherent,loginAdherent, pwdAdherent) VALUES (?,?,?,?,?,?,?)");
-		$requete->bindValue(1, $sonId);
-		$requete->bindValue(2, $unNomAdherent);
-		$requete->bindValue(3, $unPrenomAdherent);
-		$requete->bindValue(4, $unAgeAdherent);
-		$requete->bindValue(5, $unSexeAdherent);
-		$requete->bindValue(6, $unLoginAdherent);
-		$requete->bindValue(7, $unPwdAdherent);
-		if (!$requete->execute())
-		{
-			die("Erreur dans insert Adherent : " . $requete->errorCode());
-		}
-		//ajout de l'action dans logActionUtilisateur
-		$log = $this->conn->prepare("INSERT INTO logActionUtilisateur (action,temps,idUtilisateur) VALUES (?,?,?)");
-		$log->bindValue(1, 'insert equipe ' .$sonId);
-		$log->bindValue(2, $moment);
-		$log->bindValue(3, $_SESSION['login']);
-		if (!$log->execute())
-		{
-			die("<h1>ERREUR<br>Connexion à la base de données impossible.</h1>");
-		}
-		return $sonId;
-	}
-
-	public function insertPouvoir($listeEquipe)
-	{
+		$pwd = MD5($unPwdAdherent);
 		$trigger = false;
 		$sonId = $this->donneProchainIdentifiant("ADHERENT", "idAdherent");
-		$moment = date("Y-m-d H:i:s");
 		$lesEquipes = '';
 
 		try
 		{
+			$sonId = $this->donneProchainIdentifiant("ADHERENT", "idAdherent");
+			$requete = $this->conn->prepare("INSERT INTO ADHERENT (idAdherent,nomAdherent, prenomAdherent, ageAdherent, sexeAdherent,loginAdherent, pwdAdherent) VALUES (?,?,?,?,?,?,?)");
+			$requete->bindValue(1, $sonId);
+			$requete->bindValue(2, $unNomAdherent);
+			$requete->bindValue(3, $unPrenomAdherent);
+			$requete->bindValue(4, $unAgeAdherent);
+			$requete->bindValue(5, $unSexeAdherent);
+			$requete->bindValue(6, $unLoginAdherent);
+			$requete->bindValue(7, $pwd);
+
+			if (!$requete->execute())
+			{
+				die("Erreur dans insert Adherent : " . $requete->errorCode());
+			}
+
 			foreach ($listeEquipe as $idEquipe)
 			{
 				$requete = $this->conn->prepare("INSERT INTO POUVOIR (idAdherent, idEquipe) VALUES (?,?)");
-				$requete->bindValue(1, $sonId - 1);
+				$requete->bindValue(1, $sonId);
 				$requete->bindValue(2, $idEquipe);
+
 				if (!$requete->execute())
 				{
 					die("<h1>ERREUR<br>Connexion à la base de données impossible.</h1>");
@@ -287,19 +278,18 @@ class accesBD
 				echo $e->getMessage();
 			}
 		}
-
 		//ajout de l'action dans logActionUtilisateur
 		$log = $this->conn->prepare("INSERT INTO logActionUtilisateur (action,temps,idUtilisateur) VALUES (?,?,?)");
-		$log->bindValue(1, 'insert equipe ' . ($sonId - 1) . ' : equipe ' . $lesEquipes);
+		$log->bindValue(1, 'insert equipe ' . $sonId);
 		$log->bindValue(2, $moment);
 		$log->bindValue(3, $_SESSION['login']);
 		if (!$log->execute())
 		{
 			die("<h1>ERREUR<br>Connexion à la base de données impossible.</h1>");
 		}
-
 		return $trigger;
 	}
+
 
 	public function insertCompetent($listeSpecialites)
 	{
@@ -542,6 +532,81 @@ class accesBD
 
 		return $triggers;
 	}
+
+	public function modifAdherent($idAdherent, $nomAdherent, $prenomAdherent, $age, $sexe, $login, $pwd, $listeEquipe)
+	{
+		$triggers = ['triggerNbMaxAdherent' => false, 'triggerMaxEquipe' => false, 'triggerAge' => false];
+		$moment = date("Y-m-d H:i:s");
+		$pwd = MD5($pwd);
+
+		try
+		{
+
+			$req = $this->conn->prepare("UPDATE adherent SET nomAdherent = ?, prenomAdherent = ?, ageAdherent = ?, sexeAdherent = ?, loginAdherent = ?, pwdAdherent = ? WHERE idAdherent = ?");
+			$req->bindValue(1, $nomAdherent);
+			$req->bindValue(2, $prenomAdherent);
+			$req->bindValue(3, $age);
+			$req->bindValue(4, $sexe);
+			$req->bindValue(5, $login);
+			$req->bindValue(6, $pwd);
+			$req->bindValue(7, $idAdherent);
+
+			$req->execute();
+
+			$deletePouvoir = $this->conn->prepare("DELETE FROM pouvoir WHERE idAdherent = ?");
+			$deletePouvoir->bindValue(1, $idAdherent);
+			if (!$deletePouvoir->execute())
+			{
+				die("Erreur dans modif Specialite : " . $deletePouvoir->errorCode());
+			}
+			foreach ($listeEquipe as $equipe)
+			{
+				$requete = $this->conn->prepare("INSERT INTO pouvoir (idAdherent,idEquipe) VALUES (?,?)");
+				$requete->bindValue(1, $idAdherent);
+				$requete->bindValue(2, $equipe);
+				if (!$requete->execute())
+				{
+					die("Erreur dans modif Specialite : " . $requete->errorCode());
+				}
+			}
+		}
+		catch (PDOException $e)
+		{
+			// Vérifiez si l'erreur est liée au déclencheur et affichez un message personnalisé
+			//cherche si la variable contient 10012
+			if (strpos($e->getMessage(), '10008') !== false)
+			{
+				$triggers['triggerNbMaxAdherent'] = true;
+			}
+			elseif (strpos($e->getMessage(), '10009') !== false)
+			{
+				$triggers['triggerMaxEquipe'] = true;
+			}
+			elseif (strpos($e->getMessage(), '10010') !== false)
+			{
+				$triggers['triggerAge'] = true;
+			}
+			else
+			{
+				echo "Une erreur s'est produite lors de la modification de l'équipe.";
+				echo $e->getMessage();
+			}
+		}
+
+
+		//ajout de l'action dans logActionUtilisateur
+		$log = $this->conn->prepare("INSERT INTO logActionUtilisateur (action,temps,idUtilisateur) VALUES (?,?,?)");
+		$log->bindValue(1, 'modification ahderent ' . ($idAdherent));
+		$log->bindValue(2, $moment);
+		$log->bindValue(3, $_SESSION['login']);
+		if (!$log->execute())
+		{
+			die("<h1>ERREUR<br>Connexion à la base de données impossible.</h1>");
+		}
+
+		return $triggers;
+	}
+
 
 	/***********************************************************************************************
 	C'est la fonction qui permet de charger les tables et de les mettre dans un tableau 2 dimensions. La petite fontions specialCase permet juste de psser des minuscules aux majuscules pour les noms des tables de la base de données

@@ -164,7 +164,7 @@ class vueCentraleEquipe
 </form>';
   }
 
-  public function messageRequeteCréation()
+  public function messageRequeteCreation()
   {
     echo '<div class="text-center h2 pt-4">
 	

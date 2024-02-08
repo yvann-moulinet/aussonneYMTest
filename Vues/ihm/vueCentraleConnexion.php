@@ -25,8 +25,12 @@ class vueCentraleConnexion
 		}
 		else
 		{
-			echo "Erreur de connexion";
+
 			$this->afficheMenuInternaute($liste);
+			echo '<div class="text-center h2 pt-4">
+	
+				Erreur dans le login ou le mot de passe.
+			</div>';
 		}
 	}
 
@@ -84,7 +88,7 @@ class vueCentraleConnexion
 	{
 		echo '<div class="dropdown col">
 				<button class="btn bg-transparent dropdown-toogle" type="button" id="menuAdherent" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-					Mon profil 
+					Mon profil
 					<span class="caret"></span>
 				</button>
 				<ul class="dropdown-menu" aria-labelledby="menuAdherent">
@@ -118,12 +122,12 @@ class vueCentraleConnexion
 	{
 		echo '<div class="dropdown col">
 				<button class="btn bg-transparent dropdown-toogle" type="button" id="menuEntraineur" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					Mon profil 
+					Mon profil
 					<span class="caret"></span>
 				</button>
 				<ul class="dropdown-menu" aria-labelledby="menuEntraineur">
-					<li><a class="dropdown-item" href=index.php?vue=Entraineur&action=modifierSonProfil>Modifier son profil</a></li>
-					<li><a class="dropdown-item" href=index.php?vue=Adherent&action=modifierSonProfil>Information profil</a></li>
+					<li><a class="dropdown-item" href=index.php?vue=Entraineur&action=modifierSonProfil>Modifier son profl</a></li>
+					<li><a class="dropdown-item" href=index.php?vue=Entraineur&action=informationProfil>Information profil</a></li>
 				</ul>
 			</div>
 			<div class="dropdown col">
@@ -132,7 +136,7 @@ class vueCentraleConnexion
 					<span class="caret"></span>
 				</button>
 				<ul class="dropdown-menu" aria-labelledby="menuEntraineur">
-					<li><a class="dropdown-item" href=index.php?vue=Entraineur&action=visualiserSesSpecialites>Visualiser ses Adherents</a></li>
+					<li><a class="dropdown-item" href=index.php?vue=Entraineur&action=visualiserSesEquipes>Visualiser ses Adherents</a></li>
 				</ul>
 			</div>
 			</div>
@@ -201,21 +205,6 @@ class vueCentraleConnexion
 		echo $liste;
 		echo '</div>
 				<div class="col-md-10 col-xs-12 "style=" height: calc(100vh - 22rem); overflow: auto;">';
-	}
-
-	function mauvaisIdentifiant()
-	{
-
-		echo '<div class="text-center h2 pt-4">
-			Login ou mot de passe mauvais.
-		</div>';
-	}
-	function ManqueChamp()
-	{
-
-		echo '<div class="text-center h2 pt-4">
-			Certain champ ne sont pas renseigné.
-		</div>';
 	}
 
 	function champRole()

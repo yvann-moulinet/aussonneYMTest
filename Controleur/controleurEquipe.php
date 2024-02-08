@@ -1,7 +1,7 @@
 <?php
 switch ($action)
 {
-	/* 
+		/* 
 		----------------------------------------------------
 					AJOUTER UNE EQUIPE
 		----------------------------------------------------
@@ -49,17 +49,17 @@ switch ($action)
 		}
 		else
 		{
-			$vue->messageRequeteCréation();
+			$vue->messageRequeteCreation();
 		}
 		break;
 
-	/* 
+		/* 
 		----------------------------------------------------
 					FIN AJOUTER UNE EQUIPE
 		----------------------------------------------------
 	*/
 
-	/* 
+		/* 
 		----------------------------------------------------
 					MODIFIER UNE EQUIPE
 		----------------------------------------------------
@@ -86,7 +86,7 @@ switch ($action)
 		$vue->saisirModifEquipe($idEquipe, $lEquipe->nomEquipe, $lEquipe->nbrPlaceEquipe, $lEquipe->ageMinEquipe, $lEquipe->ageMaxEquipe, $listeSpecialite, $listeEntraineur,);
 		break;
 
-	case 'enregistrerModif':
+	case 'enregistrerModification':
 		$idEquipe = $_POST['idEquipe'];
 		$nomEquipe = $_POST['nomEquipe'];
 		$nbrPlaceEquipe = $_POST['nbrPlaceEquipe'];
@@ -95,16 +95,16 @@ switch ($action)
 		$sexEquipe = $_POST['sexEquipe'];
 		$idSpecialite = $_POST['idSpecialite'];
 		$idEntraineur = $_POST['idEntraineur'];
-		$vacataire = $this->tousLesVacataires->chercherExistanceIdVacataire($idEntraineur);
+		/*$vacataire = $this->tousLesVacataires->chercherExistanceIdVacataire($idEntraineur);
 		if ($vacataire)
 		{
-			$this->toutesLesEquipes->modifierUneEquipe($idEquipe, $nomEquipe, $placeEquipe, $ageMin, $ageMax, $sexEquipe, $this->toutesLesSpecialites->donneObjetSpecialiteDepuisNumero($idSpecialites), $this->tousLesVacataires->donneObjetVacataireDepuisNumero($idEntraineur));
+			$this->toutesLesEquipes->modifierUneEquipe($idEquipe, $nomEquipe, $nbrPlaceEquipe, $ageMin, $ageMax, $sexEquipe, $this->toutesLesSpecialites->donneObjetSpecialiteDepuisNumero($idSpecialite), $this->tousLesVacataires->donneObjetVacataireDepuisNumero($idEntraineur));
 		}
 		else
 		{
-			$this->toutesLesEquipes->modifierUneEquipe($idEquipe, $nomEquipe, $placeEquipe, $ageMin, $ageMax, $sexEquipe, $this->toutesLesSpecialites->donneObjetSpecialiteDepuisNumero($idSpecialites), $this->tousLesTitulaires->donneObjetTitulaireDepuisNumero($idEntraineur));
-		}
-		$triggers = $this->maBD->modifEquipe($idEquipe, $nomEquipe, $placeEquipe, $ageMin, $ageMax, $sexEquipe, $idSpecialites, $idEntraineur);
+			$this->toutesLesEquipes->modifierUneEquipe($idEquipe, $nomEquipe, $nbrPlaceEquipe, $ageMin, $ageMax, $sexEquipe, $this->toutesLesSpecialites->donneObjetSpecialiteDepuisNumero($idSpecialite), $this->tousLesTitulaires->donneObjetTitulaireDepuisNumero($idEntraineur));
+		}*/
+		$triggers = $this->maBD->modifEquipe($idEquipe, $nomEquipe, $nbrPlaceEquipe, $ageMin, $ageMax, $sexEquipe, $idSpecialite, $idEntraineur);
 		$triggerOccupeEquipe = $triggers['trigger'];
 		$triggerCompEntraineur = $triggers['triggerCompEntraineur'];
 		$vue = new vueCentraleConnexion();
@@ -121,11 +121,11 @@ switch ($action)
 		}
 		else
 		{
-			$vue->messageRequeteCréation();
+			$vue->messageRequeteModification();
 		}
 		break;
 
-	/* 
+		/* 
 		----------------------------------------------------
 					FIN MODIFIER UNE EQUIPE
 		----------------------------------------------------
@@ -138,5 +138,9 @@ switch ($action)
 		$message = $this->toutesLesEquipes->listeDesEquipes();
 		$vue = new vueCentraleEquipe();
 		$vue->visualiserEquipe($message);
+		break;
+
+	default:
+		echo "Erreur requête introuvable";
 		break;
 }

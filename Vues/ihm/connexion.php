@@ -21,24 +21,24 @@
 							<tbody>
 								<tr>
 									<td >
-											<input type="radio" name="role" value="1" id="admin">
+											<input type="radio" name="role" value="1" id="admin" required>
 											<label for="admin">Admin</label> <br/>
 									</td>
 									<td>
-											<input type="radio" name="role" value="2" id="adherent">
+											<input type="radio" name="role" value="2" id="adherent" required>
 											<label for="adherent">Adherent</label> <br/>
 									</td>
 									<td>
-											<input type="radio" name="role" value="3" id="entraineur">
+											<input type="radio" name="role" value="3" id="entraineur" required>
 											<label for="entraineur">Entraineur</label> <br/>
 									</td>
 								</tr>
 								<tr>
 									<td>
-											<input type=text name=login placeholder="Login"></input>
+											<input type=text name=login placeholder="Login" required></input>
 									</td>
 									<td>
-											<input type=text name=pwd placeholder="Pwd"></input>
+											<input type=text name=pwd placeholder="Pwd" required></input>
 									</td>
 									<td>
 									</td>

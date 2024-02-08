@@ -212,7 +212,7 @@ class vueCentraleAdherent
 	public function saisirModifAdherent($idAdherent, $nomAdherent, $prenomAdherent, $age, $login, $pwd, $listeEquipe)
 	{
 
-		echo '<form action=index.php?vue=Equipe&action=enregistrerModification method=POST>';
+		echo '<form action=index.php?vue=Adherent&action=enregistrerModif method=POST>';
 
 		echo '<div class="container pt-5">
 	  	<p class="h2 text-center pb-3">Modifier adherent<p>
@@ -279,6 +279,39 @@ class vueCentraleAdherent
 		echo '<div class="text-center h2 pt-4">
 	  
 			l\'dherent ne corespond pas aux critéres de l\'équipe.
+	  
+		</div>';
+	}
+
+	public function messageRequeteTriggerNbMaxAdherent()
+	{
+	  	echo '<div class="text-center h2 pt-4">
+	  
+			  L\'équipe est compléte.
+	  
+		</div>';
+	}
+	public function messageRequeteTriggerMaxEquipe()
+	{
+	  	echo '<div class="text-center h2 pt-4">
+	  
+	  		L\'adherent ne peux pas avoir plus de 3 équipes.
+	  
+		</div>';
+	}
+	public function messageRequeteTriggerAge()
+	{
+	  	echo '<div class="text-center h2 pt-4">
+	  
+	  		L\'adherent n\'a pas l\'age requis.
+	  
+		</div>';
+	}
+	public function messageRequeteUpdate()
+	{
+		echo '<div class="text-center h2 pt-4">
+	  
+			La modification de l\'adherent est prit en compte.
 	  
 		</div>';
 	}

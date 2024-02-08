@@ -6,6 +6,39 @@
 		{
 		}
 
+		public function modifierSonProfilEntraineur()
+		{	//form pour passer la variable npass
+			echo '<form action="" method="POST">
+			<label>Changer le mot de passe</label>
+			<input type="password" id="npass" name="npass" required"><br>
+			<input type="submit" value="Envoyer">
+			</form>';
+		}
+		public function informationEntraineur($id)
+		{
+			$listeEntraineur = explode("|", $id);
+			//$listeEntraineur[6] = str_replace('\n', '', $listeEntraineur[6]);
+			//print_r($listeEntraineur);
+			echo '<div class="row">
+					<div class="col-sm">
+					</div>
+					<div class="col-sm">
+						<div class="card col d-flex" style="width: 18rem;">
+							<div class="card-body">
+								<h5 class="card-title text-center">Visualisation d\'un Entraineur</h5>
+									<h6 class="card-subtitle mb-2 text-muted text-center">Detail de l\'entraineur</h6>
+										<p class="card-text text-center"><b class="h5">' . $listeEntraineur[1] . '</b><br> 
+										Login : ' . $listeEntraineur[2] . '<br> 
+										Specialite : ' . $listeEntraineur[3] . '<br>
+										</p>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm">
+					</div>
+				</div>';
+		}
+
 		public function ajouterEntraineur()
 		{
 			echo '<form action=index.php?vue=Entraineur&action=SaisirEntraineur method=POST align=center>
