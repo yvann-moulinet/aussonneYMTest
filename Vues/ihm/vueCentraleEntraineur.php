@@ -14,10 +14,53 @@
 			<input type="submit" value="Envoyer">
 			</form>';
 		}
+		public function afficheSesEquipes($sesEquipes)
+		{
+			$equipes = [];
+
+			// Regrouper les membres par équipe
+			foreach ($sesEquipes as $row)
+			{
+				$equipe = $row[0];
+				$nom = $row[1];
+				$prenom = $row[2];
+
+				// Si l'équipe n'existe pas encore dans le tableau $equipes, on la crée
+				if (!isset($equipes[$equipe]))
+				{
+					$equipes[$equipe] = [];
+				}
+
+				// Ajouter le membre à l'équipe correspondante
+				$equipes[$equipe][] = ['nom' => $nom, 'prenom' => $prenom];
+			}
+			echo "<p class='text-center h4'><b>Voici les équipes avec ses adherent que vous entrainés</b></p>";
+			foreach ($equipes as $nomEquipe => $membres)
+			{
+				echo '<div class="row">
+				<div class="col-sm">
+				</div>
+				<div class="col-sm pt-3">
+					<div class="card col d-flex" style="width: 18rem;">
+						<div class="card-body">
+							<h5 class="card-title">Équipe: '.$nomEquipe.'</h5>
+								<h6 class="card-subtitle mb-2 text-muted">Detail des adherents</h6>';
+								foreach ($membres as $membre)
+								{
+									echo 'Adherent : ' . $membre['nom'] . ' ' . $membre['prenom'] . '<br>';
+								}
+				echo '      </div>
+					</div>
+				</div>
+				<div class="col-sm">
+				</div>
+			</div>';
+			}
+			
+		}
 		public function informationEntraineur($id)
 		{
 			$listeEntraineur = explode("|", $id);
-			//$listeEntraineur[6] = str_replace('\n', '', $listeEntraineur[6]);
 			//print_r($listeEntraineur);
 			echo '<div class="row">
 					<div class="col-sm">
@@ -239,7 +282,7 @@
 			  </tr>';
 			}
 
-						echo '</table>
+			echo '</table>
 		  			</div>
 				</div>
 			</div>';
@@ -247,8 +290,9 @@
 
 			echo '<div class="row pt-5 text-center">
 			<div class="col-9">
-				<legend>Choisir les spécialités que l\'entraineur pourras enseigner a partir de maintenant: </legend>
-				<p class="text-danger">M\'intenir la touche Ctrl appuiyer pour sélectionner plusieur spécialités</p>
+				<legend>Choisir les spécialités que l\'entraineur pourras enseigner a partir de maintenant: <br>
+				Attention a changer les équipes d\'entraineur en conséquence</legend>
+				<p class="text-danger"><b>M\'intenir la touche Ctrl appuiyer pour sélectionner plusieur spécialités</b></p>
 			</div>
 			<div class="col-3 text-left">
 				<legend>' . $listeSpecialite . '</legend>

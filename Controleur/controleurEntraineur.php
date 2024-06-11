@@ -1,7 +1,7 @@
 <?php
 switch ($action)
 {
-	/* 
+		/* 
 		----------------------------------------------------
 					AJOUTER UN ENTRAINEUR 
 		----------------------------------------------------
@@ -52,6 +52,7 @@ switch ($action)
 			$listeSpecialites = $_POST['idSpecialite'];
 			$this->tousLesTitulaires->ajouterUnTitulaire($this->maBD->donneProchainIdentifiant("ENTRAINEUR") + 1, $nomEntraineur,  $loginEntraineur, $pwdEntraineur, $dateEmbEntraineur, new conteneurSpecialite($listeSpecialites));
 			$this->maBD->insertTitulaire($nomEntraineur, $loginEntraineur, $pwdEntraineur, $dateEmbEntraineur);
+			$this->maBD->insertCompetent($listeSpecialites);
 			$vue = new vueCentraleConnexion();
 			$liste = $this->maBD->afficheListeSelect();
 			$vue->afficheMenuAdmin($liste);
@@ -59,14 +60,14 @@ switch ($action)
 			$vue->messageRequeteCreation();
 		}
 		break;
-	/*
+		/*
 	----------------------------------------------------------------
 					FIN AJOUTER UN ENTRAINEUR
 	----------------------------------------------------------------
-	*/ 
+	*/
 
 
-	/*
+		/*
 	----------------------------------------------------------------
 					MODIFIER UN ENTRAINEUR
 	----------------------------------------------------------------
@@ -91,7 +92,7 @@ switch ($action)
 			$vacataire = true;
 			$titulaire = false;
 			$entraineur = $this->tousLesVacataires->donneObjetVacataireDepuisNumero($idEntraineur);
-			$listeSpecialite = $this->toutesLesSpecialites->lesSpecialitesMultipleAuFormatHTML();
+			$listeSpecialite = $this->toutesLesSpecialites->lesSpecialitesMultipleSelectedAuFormatHTML($entraineur->idSpecialites());
 			$vue->saisirModifEntraineur($listeSpecialite, $idEntraineur, $entraineur->nomEntraineur, $entraineur->loginEntraineur, $entraineur->pwdEntraineur, $entraineur->telephone, $vacataire, $titulaire);
 		}
 		else
@@ -99,7 +100,8 @@ switch ($action)
 			$vacataire = false;
 			$titulaire = true;
 			$entraineur = $this->tousLesTitulaires->donneObjetTitulaireDepuisNumero($idEntraineur);
-			$listeSpecialite = $this->toutesLesSpecialites->lesSpecialitesMultipleAuFormatHTML();
+			$listeSpecialite = $this->toutesLesSpecialites->lesSpecialitesMultipleSelectedAuFormatHTML($entraineur->idSpecialites());
+			echo json_encode($this->tousLesTitulaires);
 			$vue->saisirModifEntraineur($listeSpecialite, $idEntraineur, $entraineur->nomEntraineur, $entraineur->loginEntraineur, $entraineur->pwdEntraineur, $entraineur->dateEmbauche, $vacataire, $titulaire);
 		}
 		break;
@@ -109,15 +111,31 @@ switch ($action)
 		$nomEntraineur = $_POST['nomEntraineur'];
 		$loginEntraineur = $_POST['loginEntraineur'];
 		$pwdEntraineur = $_POST['pwdEntraineur'];
-		/*$dateOuTel = $_POST['dateOuTel'];
-		$vacataire = $_POST['vacataire'];
-		$titulaire = $_POST['titulaire'];*/
+
 		//initialiser les variable qui peuvent ne rien contenir comme un if-else
 		$dateOuTel = isset($_POST['dateOuTel']) ? $_POST['dateOuTel'] : null;
 		$vacataire = isset($_POST['vacataire']) ? $_POST['vacataire'] : null;
 		$titulaire = isset($_POST['titulaire']) ? $_POST['titulaire'] : null;
-
-		$this->maBD->modifEntraineur($idEntraineur, $listeSpecialites, $nomEntraineur, $loginEntraineur, $pwdEntraineur, $dateOuTel, $vacataire, $titulaire);
+		$lVacataire = $this->tousLesVacataires->chercherExistanceIdVacataire($idEntraineur);
+		if($lVacataire)
+		{
+			$entraineur = $this->tousLesVacataires->donneObjetVacataireDepuisNumero($idEntraineur);
+			if($entraineur->pwdEntraineur === $pwdEntraineur)
+			{
+				$pwdEntraineur = null;
+			}
+			$this->maBD->modifEntraineur($idEntraineur, $listeSpecialites, $nomEntraineur, $loginEntraineur, $pwdEntraineur, $dateOuTel, $vacataire, $titulaire);
+		}
+		else
+		{
+			$entraineur = $this->tousLesTitulaires->donneObjetTitulaireDepuisNumero($idEntraineur);
+			if($entraineur->pwdEntraineur === $pwdEntraineur)
+			{
+				$pwdEntraineur = null;
+			}
+			$this->maBD->modifEntraineur($idEntraineur, $listeSpecialites, $nomEntraineur, $loginEntraineur, $pwdEntraineur, $dateOuTel, $vacataire, $titulaire);
+		}
+		//$this->maBD->modifEntraineur($idEntraineur, $listeSpecialites, $nomEntraineur, $loginEntraineur, $pwdEntraineur, $dateOuTel, $vacataire, $titulaire);
 		$vue = new vueCentraleConnexion();
 		$liste = $this->maBD->afficheListeSelect();
 		$vue->afficheMenuAdmin($liste);
@@ -125,11 +143,11 @@ switch ($action)
 		$vue->messageRequeteModification();
 		break;
 
-	/*
+		/*
 	----------------------------------------------------------------
 					FIN MODIFIER UN ENTRAINEUR
 	----------------------------------------------------------------
-	*/ 
+	*/
 	case "visualiser":
 		$vue = new vueCentraleConnexion();
 		$liste = $this->maBD->afficheListeSelect();
@@ -143,7 +161,11 @@ switch ($action)
 		$vue = new vueCentraleConnexion();
 		$liste = $this->maBD->afficheListeSelect();
 		$vue->afficheMenuEntraineur($liste);
-		//reste à faire
+		$idEntraineur = $this->tousLesEntraineurs->idEntraineur();
+		$sesEquipes = $this->maBD->afficheSesSportif($idEntraineur);
+		$vue = new vueCentraleEntraineur();
+		$vue->afficheSesEquipes($sesEquipes);
+
 		break;
 	case "informationProfil":
 		$vue = new vueCentraleConnexion();
@@ -152,7 +174,6 @@ switch ($action)
 		$id = $this->tousLesEntraineurs->infoEntraineur();
 		$vue = new vueCentraleEntraineur();
 		$vue->informationEntraineur($id);
-		break;
 		break;
 	case "modifierSonProfil":
 		$vue = new vueCentraleConnexion();

@@ -184,7 +184,7 @@ class controleur
 						$lesSpecialites->ajouterUneSpecialite($resultSpecialite[$nb][0], $resultSpecialite[$nb][1]);
 						$nb++;
 					}
-					$this->tousLesTitulaires->ajouterUnTitulaire($resultatEntraineur[$nbE][0], $resultatEntraineur[$nbE][1], $resultatEntraineur[$nbE][2], $resultatEntraineur[$nbE][2], $resultatTitulaire[$nbT][1], $lesSpecialites);
+					$this->tousLesTitulaires->ajouterUnTitulaire($resultatEntraineur[$nbE][0], $resultatEntraineur[$nbE][1], $resultatEntraineur[$nbE][2], $resultatEntraineur[$nbE][3], $resultatTitulaire[$nbT][1], $lesSpecialites);
 				}
 				$nbT++;
 			}

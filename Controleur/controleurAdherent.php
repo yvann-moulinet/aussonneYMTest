@@ -18,14 +18,30 @@ switch ($action)
 		$login = $_POST['login'];
 		$pwd = $_POST['pwd'];
 		$listeEquipe = $_POST['idEquipe'];
-		$trigger = $this->maBD->insertAdherent($nom,$prenom,$age,$sexe,$login,$pwd, $listeEquipe);
+		$triggers = $this->maBD->insertAdherent($nom,$prenom,$age,$sexe,$login,$pwd, $listeEquipe);
+		$triggerNbMaxAdherent = $triggers['triggerNbMaxAdherent'];
+		$triggerMaxEquipe = $triggers['triggerMaxEquipe'];
+		$triggerAge = $triggers['triggerAge'];
+		$triggerSexe = $triggers['triggerSexe'];
 		$vue = new vueCentraleConnexion();
 		$liste = $this->maBD->afficheListeSelect();
 		$vue->afficheMenuAdmin($liste);
 		$vue = new vueCentraleAdherent();
-		if ($trigger)
+		if ($triggerNbMaxAdherent)
 		{
-			$vue->messageRequeteTrigger();
+			$vue->messageRequeteTriggerNbMaxAdherent();
+		}
+		elseif ($triggerMaxEquipe)
+		{
+			$vue->messageRequeteTriggerMaxEquipe();
+		}
+		elseif ($triggerAge)
+		{
+			$vue->messageRequeteTriggerAge();
+		}
+		elseif ($triggerSexe)
+		{
+			$vue->messageRequeteTriggerSexe();
 		}
 		else
 		{
@@ -48,24 +64,41 @@ switch ($action)
 		$vue->afficheMenuAdmin($liste);
 		$vue = new vueCentraleAdherent();
 		$idAdherent = $_POST['idAdherent'];
-		$listeEquipe = $this->toutesLesEquipes->lesEquipesAuFormatHTMLmultiple(); 
 		$lAdherent = $this->tousLesAdherents->donneObjetAdherentDepuisNumero($idAdherent);
-		$vue->saisirModifAdherent($lAdherent->idAdherent, $lAdherent->nomAdherent, $lAdherent->prenomAdherent, $lAdherent->ageAdherent, $lAdherent->loginAdherent, $lAdherent->pwdAdherent, $listeEquipe);
+		$listeEquipe = $this->toutesLesEquipes->lesEquipesMultipleSelectedAuFormatHTML($lAdherent->idEquipe()); 
+		$listeSexe = $this->tousLesAdherents->sexeAdherentAuFormatHTML($lAdherent->sexeAdherent);
+		$vue->saisirModifAdherent($idAdherent, $lAdherent->nomAdherent, $lAdherent->prenomAdherent, $lAdherent->ageAdherent, $lAdherent->loginAdherent, $lAdherent->pwdAdherent, $listeEquipe, $listeSexe);
 		break;
 
 	case "enregistrerModif":
 		$idAdherent = $_POST['idAdherent'];
+		$lAdherent = $this->tousLesAdherents->donneObjetAdherentDepuisNumero($idAdherent);
+		$ancienNom = $lAdherent->nomAdherent;
+		$ancienPrenom = $lAdherent->prenomAdherent;
+		$ancienAge = $lAdherent->ageAdherent;
+		$ancienSexe = $lAdherent->sexeAdherent;
+		$ancienLogin = $lAdherent->loginAdherent;
+		$ancienPwd = $lAdherent->pwdAdherent;
+
+		
 		$nom = $_POST['nomAdherent'];
 		$prenom = $_POST['prenomAdherent'];
 		$age = $_POST['age'];
 		$sexe = $_POST['sexEquipe'];
 		$login = $_POST['login'];
 		$pwd = $_POST['pwd'];
-		$listeEquipe = $_POST['idEquipe'];
-		$triggers = $this->maBD->modifAdherent($idAdherent,$nom,$prenom,$age,$sexe,$login,$pwd,$listeEquipe);
+		$listeEquipeAvant = $lAdherent->idEquipe(); 
+		if($pwd == $lAdherent->pwdAdherent)
+		{
+			$pwd = null;
+		}
+		$listeEquipeApres = $_POST['idEquipe'];
+		$triggers = $this->maBD->modifAdherent($idAdherent,$nom,$prenom,$age,$sexe,$login,$pwd,$listeEquipeApres,$listeEquipeAvant,$ancienNom,$ancienPrenom,$ancienAge,$ancienSexe,$ancienLogin,$ancienPwd);
 		$triggerNbMaxAdherent = $triggers['triggerNbMaxAdherent'];
 		$triggerMaxEquipe = $triggers['triggerMaxEquipe'];
 		$triggerAge = $triggers['triggerAge'];
+		$triggerSexe = $triggers['triggerSexe'];
+		$triggerCritere = $triggers['adherentCritere'];
 		$vue = new vueCentraleConnexion();
 		$liste = $this->maBD->afficheListeSelect();
 		$vue->afficheMenuAdmin($liste);
@@ -81,6 +114,14 @@ switch ($action)
 		elseif ($triggerAge)
 		{
 			$vue->messageRequeteTriggerAge();
+		}
+		elseif ($triggerSexe)
+		{
+			$vue->messageRequeteTriggerSexe();
+		}
+		elseif($triggerCritere)
+		{
+			$vue->messageRequeteCritere();
 		}
 		else
 		{

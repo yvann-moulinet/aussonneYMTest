@@ -80,10 +80,14 @@ switch ($action)
 		$vue->afficheMenuAdmin($liste);
 		$idEquipe = $_POST['idEquipe'];
 		$lEquipe = $this->toutesLesEquipes->donneObjetEquipeDepuisNumero($idEquipe);
-		$listeSpecialite = $this->toutesLesSpecialites->lesSpecialitesAuFormatHTML();
-		$listeEntraineur = $this->tousLesEntraineurs->lesEntraineursAuFormatHTML();
+		$listeSpecialite = $this->toutesLesSpecialites->lesSpecialitesSelectedAuFormatHTML($lEquipe->idSpecialite);
+		$listeEntraineur = $this->tousLesEntraineurs->lesEntraineursSelectedAuFormatHTML($lEquipe->idEntraineur);
+		$listeSexe = $this->toutesLesEquipes->sexeEquipeAuFormatHTML($lEquipe->sexeEquipe);
 		$vue = new vueCentraleEquipe();
-		$vue->saisirModifEquipe($idEquipe, $lEquipe->nomEquipe, $lEquipe->nbrPlaceEquipe, $lEquipe->ageMinEquipe, $lEquipe->ageMaxEquipe, $listeSpecialite, $listeEntraineur,);
+		echo $lEquipe->idSpecialite;
+		echo $lEquipe->idEntraineur;
+		echo $lEquipe->sexeEquipe;
+		$vue->saisirModifEquipe($idEquipe, $lEquipe->nomEquipe, $lEquipe->nbrPlaceEquipe, $lEquipe->ageMinEquipe, $lEquipe->ageMaxEquipe, $listeSpecialite, $listeEntraineur,$listeSexe);
 		break;
 
 	case 'enregistrerModification':

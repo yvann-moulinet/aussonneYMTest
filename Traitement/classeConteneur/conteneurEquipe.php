@@ -58,6 +58,27 @@ class conteneurEquipe
 		return $liste;
 	}
 
+	public function sexeEquipeAuFormatHTML($sexeSelectionne)
+	{
+		$liste = "<select id='sexEquipe' name='sexEquipe' required>";
+		$liste .= "<option value='Féminin'";
+		if ($sexeSelectionne === "Féminin")
+		{
+			$liste .= " selected";
+		}
+		$liste .= ">Féminin</option>";
+
+		$liste .= "<option value='Masculin'";
+		if ($sexeSelectionne === "Masculin")
+		{
+			$liste .= " selected";
+		}
+		$liste .= ">Masculin</option>";
+
+		$liste .= "</select>";
+		return $liste;
+	}
+
 	public function lesEquipesAuFormatHTML()
 	{
 		$liste = "<SELECT name = 'idEquipe'>";
@@ -79,13 +100,42 @@ class conteneurEquipe
 		return $liste;
 	}
 
+	public function lesEquipesMultipleSelectedAuFormatHTML($listeIdEquipe)
+	{
+
+		$liste = "<select name='idEquipe[]' multiple required>";
+
+		foreach ($this->lesEquipes as $uneEquipe)
+		{
+			// Vérifier si l'ID de la spécialité est dans la liste des ID spécifiés
+			$selected = in_array($uneEquipe->idEquipe, $listeIdEquipe) ? 'selected' : '';
+			$liste .= "<option value='" . $uneEquipe->idEquipe . "' $selected>" . $uneEquipe->nomEquipe . "</option>";
+		}
+
+		$liste .= "</select>";
+
+		return $liste;
+	}
+
+	public function idDesEquipes()
+	{
+		$return = array();
+
+		foreach ($this->lesEquipes as $uneEquipe)
+		{
+			array_push($return, $uneEquipe->idEquipe);
+		}
+
+		return $return;
+	}
+
 	public function leNomDesEquipes()
 	{
 		$return = array();
 
 		foreach ($this->lesEquipes as $uneEquipe)
 		{
-		array_push($return, $uneEquipe->nomEquipe /*. ' (' . $uneEquipe->nomEntraineur . ')'*/);
+			array_push($return, $uneEquipe->nomEquipe /*. ' (' . $uneEquipe->nomEntraineur . ')'*/);
 		}
 
 		return implode(', ', $return);
@@ -97,7 +147,7 @@ class conteneurEquipe
 
 		foreach ($this->lesEquipes as $uneEquipe)
 		{
-		array_push($return, $uneEquipe->nomSpecialite /*. ' (' . $uneEquipe->nomEntraineur . ')'*/);
+			array_push($return, $uneEquipe->nomSpecialite /*. ' (' . $uneEquipe->nomEntraineur . ')'*/);
 		}
 
 		return implode(', ', $return);

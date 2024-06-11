@@ -93,4 +93,8 @@ class metierAdherent
 
 		return  $liste;
 	}
+	public function idEquipe()
+	{
+		return $this->lesEquipes->idDesEquipes();
+	}
 }

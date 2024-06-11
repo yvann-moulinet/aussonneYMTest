@@ -1,5 +1,5 @@
 <!-- Le bouton qui va lancer la modal -->
-<button type="button" class="btn bg-transparent" data-toggle="modal" data-target="#connexion">
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#connexion">
   Se connecter
 </button>
 
@@ -14,52 +14,36 @@
         </button>
       </div>
       <div class="modal-body">
-		<div class="container">
-			<div class="row">
-					<form action=index.php?vue=Connexion&action=Verification method=POST align=center>
-						<table class="table table-sm">
-							<tbody>
-								<tr>
-									<td >
-											<input type="radio" name="role" value="1" id="admin" required>
-											<label for="admin">Admin</label> <br/>
-									</td>
-									<td>
-											<input type="radio" name="role" value="2" id="adherent" required>
-											<label for="adherent">Adherent</label> <br/>
-									</td>
-									<td>
-											<input type="radio" name="role" value="3" id="entraineur" required>
-											<label for="entraineur">Entraineur</label> <br/>
-									</td>
-								</tr>
-								<tr>
-									<td>
-											<input type=text name=login placeholder="Login" required></input>
-									</td>
-									<td>
-											<input type=text name=pwd placeholder="Pwd" required></input>
-									</td>
-									<td>
-									</td>
-								<tr>
-									<td >
-									</td>
-									<td>
-									<button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-									</td>
-									<td>
-									<button type="submit" class="btn btn-primary">Valider</button>
-					</form>
-									</td>
-								</tr>
-							</tbody>
-						</table>
-						
-			</div>
-		</div>
-	  </div>
-      
+        <form action="index.php?vue=Connexion&action=Verification" method="POST">
+          <div class="form-group">
+            <label for="role">Choisissez votre rôle:</label><br>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="role" id="admin" value="1" required>
+              <label class="form-check-label" for="admin">Admin</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="role" id="adherent" value="2" required>
+              <label class="form-check-label" for="adherent">Adherent</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="role" id="entraineur" value="3" required>
+              <label class="form-check-label" for="entraineur">Entraineur</label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="login">Login:</label>
+            <input type="text" class="form-control" id="login" name="login" placeholder="Votre login" required>
+          </div>
+          <div class="form-group">
+            <label for="pwd">Mot de passe:</label>
+            <input type="password" class="form-control" id="pwd" name="pwd" placeholder="Votre mot de passe" required>
+          </div>
+          <div class="text-right">
+            <button type="button" class="btn btn-secondary mr-2" data-dismiss="modal">Fermer</button>
+            <button type="submit" class="btn btn-primary">Valider</button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 </div>

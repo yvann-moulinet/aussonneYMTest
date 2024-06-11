@@ -58,6 +58,27 @@ class conteneurAdherent
 		return $liste;
 	}
 
+	public function sexeAdherentAuFormatHTML($sexeSelectionne)
+	{
+		$liste = "<select id='sexEquipe' name='sexEquipe' required>";
+		$liste .= "<option value='Féminin'";
+		if ($sexeSelectionne === "Féminin")
+		{
+			$liste .= " selected";
+		}
+		$liste .= ">Féminin</option>";
+
+		$liste .= "<option value='Masculin'";
+		if ($sexeSelectionne === "Masculin")
+		{
+			$liste .= " selected";
+		}
+		$liste .= ">Masculin</option>";
+
+		$liste .= "</select>";
+		return $liste;
+	}
+
 	public function lesAdherentsAuFormatHTML()
 	{
 		$liste = "<SELECT name = 'idAdherent'>";

@@ -209,7 +209,7 @@ class vueCentraleAdherent
 		}
 	}
 
-	public function saisirModifAdherent($idAdherent, $nomAdherent, $prenomAdherent, $age, $login, $pwd, $listeEquipe)
+	public function saisirModifAdherent($idAdherent, $nomAdherent, $prenomAdherent, $age, $login, $pwd, $listeEquipe, $listeSexe)
 	{
 
 		echo '<form action=index.php?vue=Adherent&action=enregistrerModif method=POST>';
@@ -232,20 +232,16 @@ class vueCentraleAdherent
 						<td><input type="text" name="age" id="age" value="' . $age . '" required="true"></td>
 					</tr>
 					<tr>
-						<td>Sexe :</td>
-						<td>              
-						<select id="sexEquipe" name="sexEquipe" required>
-							<option value="Féminin">Féminin</option>
-							<option value="Masculin">Masculin</option>
-						</select>
-						</td>
+					<td>sexe de l\'adherent :</td>
+					<td> ' . $listeSexe . '</td>
 					</tr>
 					<tr>
 						<td>Login :</td>
 						<td><input type="text" name="login" id="login" value="' . $login . '" required="true"></td>
 					</tr>
 					<tr>
-						<td>Mot de passe :</td>
+						<td>Mot de passe :<br>
+						mot de passe affiché crypté</td>
 						<td><input type="text" name="pwd" id="pwd" value="' . $pwd . '" required="true"></td>
 					</tr>
 					<tr>
@@ -274,11 +270,11 @@ class vueCentraleAdherent
 		</div>';
 	}
 
-	public function messageRequeteTrigger()
+	public function messageRequeteCritere()
 	{
 		echo '<div class="text-center h2 pt-4">
 	  
-			l\'dherent ne corespond pas aux critéres de l\'équipe.
+			Une équipe a était modifier, changer les informations de l\'dherent en conséquence.
 	  
 		</div>';
 	}
@@ -312,6 +308,14 @@ class vueCentraleAdherent
 		echo '<div class="text-center h2 pt-4">
 	  
 			La modification de l\'adherent est prit en compte.
+	  
+		</div>';
+	}
+	public function messageRequeteTriggerSexe()
+	{
+		echo '<div class="text-center h2 pt-4">
+	  
+			Le sexe de l\'adherent ne correspond pas.
 	  
 		</div>';
 	}

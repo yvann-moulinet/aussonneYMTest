@@ -10,12 +10,8 @@ switch ($action)
 		$vue = new vueCentraleConnexion();
 		$liste = $this->maBD->afficheListeSelect();
 		$existe = $this->maBD->verifExistance($_SESSION['role'], $_SESSION['login'], $_SESSION['pwd']);
-		$vue->AfficherMenuContextuel($_SESSION['role'], $existe, $liste);
-
-		echo $_SESSION['role'];
-		echo $_SESSION['login'] ;
-		echo $_SESSION['pwd'] ;
 		echo $existe;
+		$vue->AfficherMenuContextuel($_SESSION['role'], $existe, $liste);
 
 		break;
 	case "Deconnexion":

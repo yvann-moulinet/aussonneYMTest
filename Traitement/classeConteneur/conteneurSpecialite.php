@@ -22,8 +22,10 @@ class conteneurSpecialite
 	public function modifierUneSpecialite($unIdSpecialite, $unNomSpecialite)
 	{
 
-		foreach ($this->lesSpecialites as $uneSpecialite) {
-			if ($uneSpecialite->idSpecialite == $unIdSpecialite) {
+		foreach ($this->lesSpecialites as $uneSpecialite)
+		{
+			if ($uneSpecialite->idSpecialite == $unIdSpecialite)
+			{
 				$uneSpecialite->nomSpecialite = $unNomSpecialite;
 			}
 		}
@@ -39,7 +41,8 @@ class conteneurSpecialite
 	public function listeDesSpecialites()
 	{
 		$liste = '';
-		foreach ($this->lesSpecialites as $uneSpecialite) {
+		foreach ($this->lesSpecialites as $uneSpecialite)
+		{
 			$liste = $liste . $uneSpecialite->afficheSpecialite();
 		}
 		return $liste;
@@ -56,12 +59,38 @@ class conteneurSpecialite
 
 		return implode(', ', $return);
 	}
+	public function idDesSpecialites()
+	{
+		$return = array();
+
+		foreach ($this->lesSpecialites as $uneSpecialite)
+		{
+			array_push($return, $uneSpecialite->idSpecialite);
+		}
+
+		return $return;
+	}
 
 	public function lesSpecialitesAuFormatHTML()
 	{
 		$liste = "<SELECT name = 'idSpecialite'>";
-		foreach ($this->lesSpecialites as $uneSpecialite) {
+		foreach ($this->lesSpecialites as $uneSpecialite)
+		{
 			$liste = $liste . "<OPTION value='" . $uneSpecialite->idSpecialite . "'>" . $uneSpecialite->nomSpecialite . "</OPTION>";
+		}
+		$liste = $liste . "</SELECT>";
+		return $liste;
+	}
+
+	public function lesSpecialitesSelectedAuFormatHTML($unIdSpecialite)
+	{
+		$liste = "<SELECT name = 'idSpecialite'>";
+		foreach ($this->lesSpecialites as $uneSpecialite)
+		{
+			//(condition) ? (valeur si vraie) : (valeur si fausse)
+			$selected = ($uneSpecialite->idSpecialite == $unIdSpecialite) ? "selected" : "";
+			$liste .= "<OPTION value='" . $uneSpecialite->idSpecialite . "' $selected>" . $uneSpecialite->nomSpecialite . "</OPTION>";
+			//$liste = $liste . "<OPTION value='" . $uneSpecialite->idSpecialite . "'>" . $uneSpecialite->nomSpecialite . "</OPTION>";
 		}
 		$liste = $liste . "</SELECT>";
 		return $liste;
@@ -80,13 +109,31 @@ class conteneurSpecialite
 		return $liste;
 	}
 
+	public function lesSpecialitesMultipleSelectedAuFormatHTML($listeIdSpecialites)
+	{
+		$liste = "<select name='idSpecialite[]' multiple required>";
+
+		foreach ($this->lesSpecialites as $uneSpecialite)
+		{
+			// Vérifier si l'ID de la spécialité est dans la liste des ID spécifiés
+			$selected = in_array($uneSpecialite->idSpecialite, $listeIdSpecialites) ? 'selected' : '';
+			$liste .= "<option value='" . $uneSpecialite->idSpecialite . "' $selected>" . $uneSpecialite->nomSpecialite . "</option>";
+		}
+
+		$liste .= "</select>";
+
+		return $liste;
+	}
+
 	public function donneObjetSpecialiteDepuisNumero($unIdSpecialite)
 	{
 
 		$trouve = false;
 		$laBonneSpecialite = null;
-		foreach ($this->lesSpecialites as $uneSpecialite) {
-			if ($uneSpecialite->idSpecialite == $unIdSpecialite) {
+		foreach ($this->lesSpecialites as $uneSpecialite)
+		{
+			if ($uneSpecialite->idSpecialite == $unIdSpecialite)
+			{
 				$trouve = true;
 				$laBonneSpecialite = $uneSpecialite;
 			}

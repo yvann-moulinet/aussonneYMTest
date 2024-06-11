@@ -56,6 +56,18 @@ class conteneurEntraineur
 		}
 		return $infos;
 	}
+	public function idEntraineur()
+	{
+		$infos = '';
+		foreach ($this->lesEntraineurs as $unEntraineur)
+		{
+			if ($_SESSION['login'] == $unEntraineur->loginEntraineur)
+			{
+				$infos = $unEntraineur->idEntraineur();
+			}
+		}
+		return $infos;
+	}
 
 	public function lesEntraineursAuFormatHTML()
 	{
@@ -67,6 +79,17 @@ class conteneurEntraineur
 		$liste = $liste . "</SELECT>";
 		return $liste;
 	}
+
+	public function lesEntraineursSelectedAuFormatHTML($unIdEntraineur)
+{
+    $liste = "<SELECT name='idEntraineur' required>";
+    foreach ($this->lesEntraineurs as $unEntraineur) {
+        $selected = ($unEntraineur->idEntraineur == $unIdEntraineur) ? "selected" : "";
+        $liste .= "<OPTION value='" . $unEntraineur->idEntraineur . "' $selected>" . $unEntraineur->nomEntraineur . "</OPTION>";
+    }
+    $liste .= "</SELECT>";
+    return $liste;
+}
 
 
 	public function donneObjetEntraineurDepuisNumero($unIdEntraineur)

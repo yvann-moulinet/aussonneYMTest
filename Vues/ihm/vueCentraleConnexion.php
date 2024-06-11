@@ -76,12 +76,13 @@ class vueCentraleConnexion
 			</div>
 		<div class="container">
 			<div class="row">
-				<div class ="col-md-2 col-xs-12 infosComplementaires">';
-		require "vues/ihm/connexion.php";
-		require "vues/ihm/deconnexion.php";
-		echo '<br> espace pour des infos complémentaires type les news le login, le password....';
-		echo '<p class ="pt-3"> ' . $liste . ' </p>';
-		echo '</div>
+				<div class ="col-md-2 col-xs-12 infosComplementaires">
+					<div class="pb-2">';
+					require "vues/ihm/connexion.php";
+					echo '</div>';
+					require "vues/ihm/deconnexion.php";
+					echo '<p class ="pt-3"> ' . $liste . ' </p>';
+					echo '</div>
 				<div class="col-md-10 col-xs-12 "style=" height: calc(100vh - 22rem); overflow: auto;">';
 	}
 	public function afficheMenuAdherent($liste)
@@ -110,12 +111,13 @@ class vueCentraleConnexion
 		</div>
 		<div class="container">
 			<div class="row">
-				<div class ="col-md-2 col-xs-12 infosComplementaires">';
-		require "vues/ihm/connexion.php";
-		require "vues/ihm/deconnexion.php";
-		echo '<br> espace pour des infos complémentaires type les news le login, le password....';
-		echo '<p class ="pt-3"> ' . $liste . ' </p>';
-		echo '</div>
+				<div class ="col-md-2 col-xs-12 infosComplementaires">
+				<div class="pb-2">';
+					require "vues/ihm/connexion.php";
+				echo '</div>';
+				require "vues/ihm/deconnexion.php";
+				echo '<p class ="pt-3"> ' . $liste . ' </p>';
+				echo '</div>
 				<div class="col-md-10 col-xs-12 align-items-center "style=" height: calc(100vh - 22rem); overflow: auto;">';
 	}
 	public function afficheMenuEntraineur($liste)
@@ -144,12 +146,12 @@ class vueCentraleConnexion
 		<div class="container">
 			<div class="row">
 				<div class ="col-md-2 col-xs-12 infosComplementaires">
-					';
-		require "vues/ihm/connexion.php";
-		require "vues/ihm/deconnexion.php";
-		echo '<br> espace pour des infos complémentaires type les news le login, le password....';
-		echo $liste;
-		echo '</div>
+					<div class="pb-2">';
+						require "vues/ihm/connexion.php";
+					echo '</div>';
+					require "vues/ihm/deconnexion.php";
+					echo $liste;
+					echo '</div>
 				<div class="col-md-10 col-xs-12 "style=" height: calc(100vh - 22rem); overflow: auto;">';
 	}
 
@@ -198,20 +200,13 @@ class vueCentraleConnexion
 		</div>
 		<div class="container">
 			<div class="row">
-				<div class ="col-md-2 col-xs-12 infosComplementaires">';
-		require "vues/ihm/connexion.php";
-		require "vues/ihm/deconnexion.php";
-		echo '<br> espace pour des infos complémentaires type les news le login, le password....';
-		echo $liste;
-		echo '</div>
+				<div class ="col-md-2 col-xs-12 infosComplementaires">
+				<div class="pb-2">';
+					require "vues/ihm/connexion.php";
+				echo '</div>';
+				require "vues/ihm/deconnexion.php";
+				echo $liste;
+				echo '</div>
 				<div class="col-md-10 col-xs-12 "style=" height: calc(100vh - 22rem); overflow: auto;">';
-	}
-
-	function champRole()
-	{
-
-		echo '<div class="text-center h2 pt-4">
-			Le champ role n\'est pas défini.
-		</div>';
 	}
 }

@@ -18,7 +18,7 @@ class vueCentraleEquipe
     }
   }
 
-  public function saisirModifEquipe($idEquipe, $nomEquipe, $nbrPlaceEquipe, $ageMin, $ageMax, $listeSpecialite, $listeEntraineur)
+  public function saisirModifEquipe($idEquipe, $nomEquipe, $nbrPlaceEquipe, $ageMin, $ageMax, $listeSpecialite, $listeEntraineur, $listeSexe)
   {
 
     echo '<form action=index.php?vue=Equipe&action=enregistrerModification method=POST>';
@@ -45,27 +45,23 @@ class vueCentraleEquipe
               <td><input type="text" name="ageMax" id="ageMax" value="' . $ageMax . '" required="true"></td>
             </tr>
             <tr>
-              <td>Sexe de l\'équipe :</td>
-              <td>              
-                <select id="sexEquipe" name="sexEquipe" required>
-                  <option value="Féminin">Féminin</option>
-                  <option value="Masculin">Masculin</option>
-                </select>
-              </td>
+            <td>sexe de l\'équipe :</td>
+            <td> ' . $listeSexe . '</td>
             </tr>
             <tr>
               <td>Nom de la spécialité :</td>
-              <td> '.$listeSpecialite.'</td>
+              <td> ' . $listeSpecialite . '</td>
             </tr>
             <tr>
               <td>Nom de l\'entraineur :</td>
-              <td> '.$listeEntraineur.'</td>
+              <td> ' . $listeEntraineur . '</td>
             </tr>
           </table>
         </div>
       </div>
     </div>
-    <div class="text-center">			
+    <div class="text-center">		
+    <legend>Attention de changer les adherents d\'équipe, en conséquence des nouvelles informations</legend>	<br>
       <button type="submit" class="btn btn-primary">Valider</button>
     </div>
 
@@ -149,11 +145,11 @@ class vueCentraleEquipe
               </select>
             </td>
             <td>';
-            echo $listeSpecialite;
-            echo '</td>
+    echo $listeSpecialite;
+    echo '</td>
             <td>';
-            echo $listeEntraineur;
-            echo '</td>
+    echo $listeEntraineur;
+    echo '</td>
           </tr>
       </tbody>
   </table>

@@ -84,22 +84,35 @@ class accesBD
 	}
 	public function modifyPassword($role, $login, $pwd)
 	{
-
 		$pwd = MD5($pwd);
 		switch ($role)
 		{
 			case "1":
-				$requete = "UPDATE administrateur SET pwdAdmin = '" . $pwd . "' where loginAdmin =  '" . $login . "';";
+				$requete = $this->conn->prepare("UPDATE administrateur SET pwdAdmin = ? WHERE loginAdmin = ?");
+				$requete->bindValue(1, $pwd);
+				$requete->bindValue(2, $login);
 				break;
 			case "2":
-				$requete = "UPDATE adherent SET pwdAdherent = '" . $pwd . "' where loginAdherent =  '" . $login . "';";
+				$requete = $this->conn->prepare("UPDATE adherent SET pwdAdherent = ? WHERE loginAdherent = ?");
+				$requete->bindValue(1, $pwd);
+				$requete->bindValue(2, $login);
 				break;
 			case "3":
-				$requete = "UPDATE entraineur SET pwdEntraineur = '" . $pwd . "' where loginEntraineur =  '" . $login . "';";
+				$requete = $this->conn->prepare("UPDATE entraineur SET pwdEntraineur = ? WHERE loginEntraineur = ?");
+				$requete->bindValue(1, $pwd);
+				$requete->bindValue(2, $login);
 				break;
 		}
-		//prend requête envoie a la base
-		$result = $this->conn->query($requete);
+		// Exécuter la requête
+		$result = $requete->execute();
+		if($result)
+		{
+				// Créer une ligne de log dans la table logActionUtilisateur
+				$req = 'INSERT INTO logActionUtilisateur (action, temps, idUtilisateur) VALUES (\'changement mot de passe\', \'' . date('Y-m-d H:i:s') . '\', \'' . $login . '\')';
+				// Utiliser une requête préparée pour l'INSERT
+				$stmt = $this->conn->prepare($req);
+				$stmt->execute();
+		}
 	}
 	public function afficheListeSelect()
 	{
@@ -230,7 +243,7 @@ class accesBD
 	{
 		$moment = date("Y-m-d H:i:s");
 		$pwd = MD5($unPwdAdherent);
-		$trigger = false;
+		$triggers = ['triggerNbMaxAdherent' => false, 'triggerMaxEquipe' => false, 'triggerAge' => false, 'triggerSexe' => false];
 		$sonId = $this->donneProchainIdentifiant("ADHERENT", "idAdherent");
 		$lesEquipes = '';
 
@@ -266,28 +279,44 @@ class accesBD
 		}
 		catch (PDOException $e)
 		{
+			$deleteAdherent = $this->conn->prepare("DELETE FROM adherent WHERE idAdherent = ?");
+			$deleteAdherent->bindValue(1, $sonId);
+			$deleteAdherent->execute();
+
 			// Vérifiez si l'erreur est liée au déclencheur et affichez un message personnalisé
 			//cherche si la variable contient 10008
-			if (strpos($e->getMessage(), '10008') !== false || strpos($e->getMessage(), '10009') !== false || strpos($e->getMessage(), '10010') !== false)
+			if (strpos($e->getMessage(), '10008') !== false)
 			{
-				$trigger = true;
+				$triggers['triggerNbMaxAdherent'] = true;
+			}
+			elseif (strpos($e->getMessage(), '10009') !== false)
+			{
+				$triggers['triggerMaxEquipe'] = true;
+			}
+			elseif (strpos($e->getMessage(), '10010') !== false)
+			{
+				$triggers['triggerAge'] = true;
+			}
+			elseif (strpos($e->getMessage(), '10011') !== false)
+			{
+				$triggers['triggerSexe'] = true;
 			}
 			else
 			{
-				echo "Une erreur s'est produite lors de l'insertion de l'adherent.";
+				echo "Une erreur s'est produite lors de la modification de l'adherent.";
 				echo $e->getMessage();
 			}
 		}
 		//ajout de l'action dans logActionUtilisateur
 		$log = $this->conn->prepare("INSERT INTO logActionUtilisateur (action,temps,idUtilisateur) VALUES (?,?,?)");
-		$log->bindValue(1, 'insert equipe ' . $sonId);
+		$log->bindValue(1, 'insert adherent ' . $sonId);
 		$log->bindValue(2, $moment);
 		$log->bindValue(3, $_SESSION['login']);
 		if (!$log->execute())
 		{
 			die("<h1>ERREUR<br>Connexion à la base de données impossible.</h1>");
 		}
-		return $trigger;
+		return $triggers;
 	}
 
 
@@ -323,7 +352,7 @@ class accesBD
 	public function insertEquipe($nomEquipe, $placeEquipe, $ageMin, $ageMax, $sexEquipe, $idSpecialites, $idEntraineur)
 	{
 		$triggers = ['trigger' => false, 'triggerCompEntraineur' => false];
-		$sonId = $this->donneProchainIdentifiant("EQUIPE", "idEquipe") + 1;
+		$sonId = $this->donneProchainIdentifiant("EQUIPE", "idEquipe");
 		$moment = date("Y-m-d H:i:s");
 
 
@@ -331,7 +360,7 @@ class accesBD
 		{
 
 			$req = $this->conn->prepare("INSERT INTO equipe (idEquipe, nomEquipe, nbrPlaceEquipe, ageMinEquipe, ageMaxEquipe, sexeEquipe, idSpecialite, idEntraineur) VALUES (?,?,?,?,?,?,?,?)");
-			$req->bindValue(1, $sonId - 1);
+			$req->bindValue(1, $sonId);
 			$req->bindValue(2, $nomEquipe);
 			$req->bindValue(3, $placeEquipe);
 			$req->bindValue(4, $ageMin);
@@ -364,7 +393,7 @@ class accesBD
 
 		//ajout de l'action dans logActionUtilisateur
 		$log = $this->conn->prepare("INSERT INTO logActionUtilisateur (action,temps,idUtilisateur) VALUES (?,?,?)");
-		$log->bindValue(1, 'insert equipe ' . ($sonId - 1));
+		$log->bindValue(1, 'insert equipe ' . ($sonId));
 		$log->bindValue(2, $moment);
 		$log->bindValue(3, $_SESSION['login']);
 		if (!$log->execute())
@@ -380,6 +409,7 @@ class accesBD
 	 ***********************************************************************************************/
 	public function modifEntraineur($idEntraineur, $listeSpecialites, $nomEntraineur, $loginEntraineur, $pwdEntraineur, $dateOuTel, $vacataire, $titulaire)
 	{
+
 		$requeteCompetent = $this->conn->prepare("DELETE FROM competent WHERE idEntraineur = ?");
 		$requeteCompetent->bindValue(1, $idEntraineur);
 		if (!$requeteCompetent->execute())
@@ -398,15 +428,31 @@ class accesBD
 		}
 		if ($vacataire)
 		{
-			$requeteVacataire = $this->conn->prepare("UPDATE entraineur SET nomEntraineur = ?, loginEntraineur = ?, pwdEntraineur = ? WHERE idEntraineur = ?");
-			$requeteVacataire->bindValue(1, $nomEntraineur);
-			$requeteVacataire->bindValue(2, $loginEntraineur);
-			$requeteVacataire->bindValue(3, $pwdEntraineur);
-			$requeteVacataire->bindValue(4, $idEntraineur);
-			if (!$requeteVacataire->execute())
+			if ($pwdEntraineur == null)
 			{
-				die("Erreur dans modif Specialite : " . $requeteVacataire->errorCode());
+				$requeteVacataire = $this->conn->prepare("UPDATE entraineur SET nomEntraineur = ?, loginEntraineur = ? WHERE idEntraineur = ?");
+				$requeteVacataire->bindValue(1, $nomEntraineur);
+				$requeteVacataire->bindValue(2, $loginEntraineur);
+				$requeteVacataire->bindValue(3, $idEntraineur);
+				if (!$requeteVacataire->execute())
+				{
+					die("Erreur dans modif Specialite : " . $requeteVacataire->errorCode());
+				}
 			}
+			else
+			{
+				$pwdEntraineur = MD5($pwdEntraineur);
+				$requeteVacataire = $this->conn->prepare("UPDATE entraineur SET nomEntraineur = ?, loginEntraineur = ?, pwdEntraineur = ? WHERE idEntraineur = ?");
+				$requeteVacataire->bindValue(1, $nomEntraineur);
+				$requeteVacataire->bindValue(2, $loginEntraineur);
+				$requeteVacataire->bindValue(3, $pwdEntraineur);
+				$requeteVacataire->bindValue(4, $idEntraineur);
+				if (!$requeteVacataire->execute())
+				{
+					die("Erreur dans modif Specialite : " . $requeteVacataire->errorCode());
+				}
+			}
+
 
 			$reqVacataire = $this->conn->prepare("UPDATE vacataire SET telephoneVacataire = ? WHERE idEntraineur = ?");
 			$reqVacataire->bindValue(1, $dateOuTel);
@@ -419,15 +465,31 @@ class accesBD
 
 		if ($titulaire)
 		{
-			$requeteTitulaire = $this->conn->prepare("UPDATE entraineur SET nomEntraineur = ?, loginEntraineur = ?, pwdEntraineur = ? WHERE idEntraineur = ?");
-			$requeteTitulaire->bindValue(1, $nomEntraineur);
-			$requeteTitulaire->bindValue(2, $loginEntraineur);
-			$requeteTitulaire->bindValue(3, $pwdEntraineur);
-			$requeteTitulaire->bindValue(4, $idEntraineur);
-			if (!$requeteTitulaire->execute())
+			if ($pwdEntraineur == null)
 			{
-				die("Erreur dans modif Specialite : " . $requeteTitulaire->errorCode());
+				$requeteTitulaire = $this->conn->prepare("UPDATE entraineur SET nomEntraineur = ?, loginEntraineur = ? WHERE idEntraineur = ?");
+				$requeteTitulaire->bindValue(1, $nomEntraineur);
+				$requeteTitulaire->bindValue(2, $loginEntraineur);
+				$requeteTitulaire->bindValue(3, $idEntraineur);
+				if (!$requeteTitulaire->execute())
+				{
+					die("Erreur dans modif Specialite : " . $requeteTitulaire->errorCode());
+				}
 			}
+			else
+			{
+				$pwdEntraineur = MD5($pwdEntraineur);
+				$requeteTitulaire = $this->conn->prepare("UPDATE entraineur SET nomEntraineur = ?, loginEntraineur = ?, pwdEntraineur = ? WHERE idEntraineur = ?");
+				$requeteTitulaire->bindValue(1, $nomEntraineur);
+				$requeteTitulaire->bindValue(2, $loginEntraineur);
+				$requeteTitulaire->bindValue(3, $pwdEntraineur);
+				$requeteTitulaire->bindValue(4, $idEntraineur);
+				if (!$requeteTitulaire->execute())
+				{
+					die("Erreur dans modif Specialite : " . $requeteTitulaire->errorCode());
+				}
+			}
+
 
 			$reqTitulaire = $this->conn->prepare("UPDATE titulaire SET dateEmbauche = ? WHERE idEntraineur = ?");
 			$dateEmbaucheFormatted = date("Y-m-d", strtotime($dateOuTel));
@@ -450,9 +512,6 @@ class accesBD
 				die("<h1>ERREUR<br>Connexion à la base de données impossible.</h1>");
 			}
 		}
-
-
-
 		return $idEntraineur;
 	}
 
@@ -533,66 +592,131 @@ class accesBD
 		return $triggers;
 	}
 
-	public function modifAdherent($idAdherent, $nomAdherent, $prenomAdherent, $age, $sexe, $login, $pwd, $listeEquipe)
+	public function modifAdherent($idAdherent, $nomAdherent, $prenomAdherent, $age, $sexe, $login, $pwd, $listeEquipeApres, $listeEquipeAvant, $ancienNom, $ancienPrenom, $ancienAge, $ancienSexe, $ancienLogin, $ancienPwd)
 	{
-		$triggers = ['triggerNbMaxAdherent' => false, 'triggerMaxEquipe' => false, 'triggerAge' => false];
+		$triggers = ['triggerNbMaxAdherent' => false, 'triggerMaxEquipe' => false, 'triggerAge' => false, 'triggerSexe' => false, 'adherentCritere' => false];
 		$moment = date("Y-m-d H:i:s");
-		$pwd = MD5($pwd);
 
 		try
 		{
 
-			$req = $this->conn->prepare("UPDATE adherent SET nomAdherent = ?, prenomAdherent = ?, ageAdherent = ?, sexeAdherent = ?, loginAdherent = ?, pwdAdherent = ? WHERE idAdherent = ?");
-			$req->bindValue(1, $nomAdherent);
-			$req->bindValue(2, $prenomAdherent);
-			$req->bindValue(3, $age);
-			$req->bindValue(4, $sexe);
-			$req->bindValue(5, $login);
-			$req->bindValue(6, $pwd);
-			$req->bindValue(7, $idAdherent);
+			if ($pwd == null)
+			{
+				$req = $this->conn->prepare("UPDATE adherent SET nomAdherent = ?, prenomAdherent = ?, ageAdherent = ?, sexeAdherent = ?, loginAdherent = ? WHERE idAdherent = ?");
+				$req->bindValue(1, $nomAdherent);
+				$req->bindValue(2, $prenomAdherent);
+				$req->bindValue(3, $age);
+				$req->bindValue(4, $sexe);
+				$req->bindValue(5, $login);
+				$req->bindValue(6, $idAdherent);
 
-			$req->execute();
+				if (!$req->execute())
+				{
+					die("Erreur dans modif adherent : " . $req->errorCode());
+				}
+			}
+			else
+			{
+				$pwd = MD5($pwd);
+				$req = $this->conn->prepare("UPDATE adherent SET nomAdherent = ?, prenomAdherent = ?, ageAdherent = ?, sexeAdherent = ?, loginAdherent = ?, pwdAdherent = ? WHERE idAdherent = ?");
+				$req->bindValue(1, $nomAdherent);
+				$req->bindValue(2, $prenomAdherent);
+				$req->bindValue(3, $age);
+				$req->bindValue(4, $sexe);
+				$req->bindValue(5, $login);
+				$req->bindValue(6, $pwd);
+				$req->bindValue(7, $idAdherent);
 
+				if (!$req->execute())
+				{
+					die("Erreur dans modif adherent : " . $req->errorCode());
+				}
+			}
+			// Supprimer les pouvoirs existants de l'adhérent
 			$deletePouvoir = $this->conn->prepare("DELETE FROM pouvoir WHERE idAdherent = ?");
 			$deletePouvoir->bindValue(1, $idAdherent);
 			if (!$deletePouvoir->execute())
 			{
-				die("Erreur dans modif Specialite : " . $deletePouvoir->errorCode());
+				die("Erreur dans delete pouvoir : " . $deletePouvoir->errorCode());
 			}
-			foreach ($listeEquipe as $equipe)
+
+			// Insérer les nouveaux pouvoirs de l'adhérent
+			foreach ($listeEquipeApres as $equipe)
 			{
 				$requete = $this->conn->prepare("INSERT INTO pouvoir (idAdherent,idEquipe) VALUES (?,?)");
 				$requete->bindValue(1, $idAdherent);
 				$requete->bindValue(2, $equipe);
 				if (!$requete->execute())
 				{
-					die("Erreur dans modif Specialite : " . $requete->errorCode());
+					die("Erreur dans insert pouvoir : " . $requete->errorCode());
 				}
 			}
 		}
 		catch (PDOException $e)
 		{
-			// Vérifiez si l'erreur est liée au déclencheur et affichez un message personnalisé
-			//cherche si la variable contient 10012
-			if (strpos($e->getMessage(), '10008') !== false)
+			try
 			{
-				$triggers['triggerNbMaxAdherent'] = true;
+				// si une requete n'a pas fonctionné remettre les ancienne valeur
+				$req = $this->conn->prepare("UPDATE adherent SET nomAdherent = ?, prenomAdherent = ?, ageAdherent = ?, sexeAdherent = ?, loginAdherent = ?, pwdAdherent = ? WHERE idAdherent = ?");
+				$req->bindValue(1, $ancienNom);
+				$req->bindValue(2, $ancienPrenom);
+				$req->bindValue(3, $ancienAge);
+				$req->bindValue(4, $ancienSexe);
+				$req->bindValue(5, $ancienLogin);
+				$req->bindValue(6, $ancienPwd);
+				$req->bindValue(7, $idAdherent);
+
+				if (!$req->execute())
+				{
+					die("Erreur dans insert ancienne valeur adherent : " . $req->errorCode());
+				}
+
+				// Supprimer les enregistrement de pouvoir car le 1er a pu passer dans le foreach plus haut
+				$deletePouvoir = $this->conn->prepare("DELETE FROM pouvoir WHERE idAdherent = ?");
+				$deletePouvoir->bindValue(1, $idAdherent);
+				if (!$deletePouvoir->execute())
+				{
+					die("Erreur dans delete pouvoir : " . $deletePouvoir->errorCode());
+				}
+				foreach ($listeEquipeAvant as $equipe)
+				{
+					$requete = $this->conn->prepare("INSERT INTO pouvoir (idAdherent,idEquipe) VALUES (?,?)");
+					$requete->bindValue(1, $idAdherent);
+					$requete->bindValue(2, $equipe);
+					if (!$requete->execute())
+					{
+						die("Erreur dans insert ancienne valeur pouvoir : " . $requete->errorCode());
+					}
+				}
+				// Vérifier si l'erreur est liée à un déclencheur et enregistrer dans $triggers
+				if (strpos($e->getMessage(), '10008') !== false)
+				{
+					$triggers['triggerNbMaxAdherent'] = true;
+				}
+				elseif (strpos($e->getMessage(), '10009') !== false)
+				{
+					$triggers['triggerMaxEquipe'] = true;
+				}
+				elseif (strpos($e->getMessage(), '10010') !== false)
+				{
+					$triggers['triggerAge'] = true;
+				}
+				elseif (strpos($e->getMessage(), '10011') !== false)
+				{
+					$triggers['triggerSexe'] = true;
+				}
+				else
+				{
+					echo "Une erreur s'est produite lors de la modification de l'adherent.";
+					echo $e->getMessage();
+				}
 			}
-			elseif (strpos($e->getMessage(), '10009') !== false)
+
+			catch (PDOException $e)
 			{
-				$triggers['triggerMaxEquipe'] = true;
-			}
-			elseif (strpos($e->getMessage(), '10010') !== false)
-			{
-				$triggers['triggerAge'] = true;
-			}
-			else
-			{
-				echo "Une erreur s'est produite lors de la modification de l'équipe.";
-				echo $e->getMessage();
+				$triggers['adherentCritere'] = true;
 			}
 		}
-
 
 		//ajout de l'action dans logActionUtilisateur
 		$log = $this->conn->prepare("INSERT INTO logActionUtilisateur (action,temps,idUtilisateur) VALUES (?,?,?)");
@@ -837,6 +961,32 @@ class accesBD
 		)
 		AND adherent.idAdherent <> $idAdherent  -- exclure
 		ORDER BY adherent.idAdherent, equipe.idEquipe";
+		$requete = $this->conn->prepare($query);
+		$nbTuples = 0;
+		$lesInfos = array();
+		if ($requete->execute())
+		{
+			while ($row = $requete->fetch(PDO::FETCH_NUM))
+			{
+				$lesInfos[$nbTuples] = $row;
+				$nbTuples++;
+			}
+		}
+		else
+		{
+			die('Problème dans chargement : ' . $requete->errorCode());
+		}
+		return $lesInfos;
+	}
+
+	public function afficheSesSportif($idEntraineur)
+	{
+		$query = "SELECT equipe.nomEquipe, adherent.nomAdherent, adherent.prenomAdherent
+		FROM adherent
+		INNER JOIN pouvoir on pouvoir.idAdherent = adherent.idAdherent
+		INNER JOIN equipe on equipe.idEquipe = pouvoir.idEquipe
+		WHERE equipe.idEntraineur = $idEntraineur";
+
 		$requete = $this->conn->prepare($query);
 		$nbTuples = 0;
 		$lesInfos = array();
